@@ -26,6 +26,15 @@ signal
     curl -vv -u jboss:brms -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/instance/42/signal?signal=reloadA'
     curl -vv -u jboss:brms -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/instance/42/signal?signal=reloadB'
 
+ConcurrentPInstanceSignal process branches as follows:
+
+. *StartWaitState* node:  updates p1 variable and does not call workItemManager.completeWorkItem().
+Thus, a wait state of the process instance is invoked.
+. *reloadA* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
+. *reloadB* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
+
+image::images/concurrentPInstanceSignal.png[]
+
 completeWorkItem
     curl -vv -u jboss:brms -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/workitem/30/complete?map_p1=5i'
 
