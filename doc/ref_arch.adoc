@@ -27,7 +27,7 @@ image::images/rhheader.png[width=900]
 . docker
 . either the mysql or postgresql variant of the {dockerbpms} image
 
-== Procedure
+== Set-up
 For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the root directory of this reference architecture.
 
 === Start BPM Suite 6
@@ -72,13 +72,18 @@ image::images/new_deployment.png[]
 
 
 == *concurrentPInstanceSignal* process instance
+Often times, it is possible that signals could be invoked on a process instance that is in a wait state at the same time.
+A business application should not have to concern itself with ensuring that external signals to a process instance in a wait state are synchronized.
+Instead, the process engine should be able to handle concurrent signals to the same process instance in a graceful manner.
+The purpose of the *concurrentPInstanceSignal* is to demonstrate the behavior of the BPM Suite 6 process engine when concurrent signals are invoked on the same process instance in a wait-state.
 
 image::images/concurrentPInstanceSignal.png[]
 
-ConcurrentPInstanceSignal process branches as follows:
+As depicted in the above diagram, the ConcurrentPInstanceSignal process includes the following branches:
 
 . *StartWaitState* node:  updates p1 variable and does not call workItemManager.completeWorkItem().
 Thus, a wait state of the process instance is invoked.
+For the purposes of this reference architecture, this branch of the process instance will remain in a wait-state.
 . *reloadA* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
 . *reloadB* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
 
@@ -96,17 +101,50 @@ The server.log of BPM Suite 6 will include a statement similar to the following:
 
 ------
 
-Make note of the value of the  _pInstanceId_ .  This value will be used in the next section of this reference architecture.
+Make note of the value of the  _pInstanceId_ .  
+This value will be used in the next section of this reference architecture.
+
+The process instance is now in a wait-state:  (notice the _StartWaitState_ node high-lighted in red)
+
+image::images/waitstate.png[]
 
 === signal *concurrentPInstanceSignal* instance
+Now that an instance of _concurrentPInstanceSignal_ is in a wait-state, the next step is to signal this process instance by two clients at the same time.
+This can be done using the curl utility in two command terminals.
 
+. In a command terminal, copy the following command :
++
 -----
 curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/instance/11/signal?signal=reloadA'
 -----
+.  replace the value of the process instance id in the URL of the above command.
++ In the example above, the process instance id is:  11 .  Replace that value as appropriate.
 
+. In a second terminal, copy the following command :
 -----
 curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/instance/11/signal?signal=reloadB'
 -----
+. Similar to previous, replace the process instance id as appropriate
+
+=== Results
+
+==== PER_PROCESS_INSTANCE KIE Session Strategy
+
+-----
+16:47:30,060 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadB:  p1 = 6 : will now sleep
+16:47:31,263 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadA:  p1 = 6 : will now sleep
+16:47:35,061 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadB:  i'm back
+16:47:36,264 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadA:  i'm back
+16:47:36,271 WARN  [com.arjuna.ats.arjuna] (http-2ca2d7a7d3b1/172.17.0.2:8080-3) ARJUNA012125: TwoPhaseCoordinator.beforeCompletion - failed for SynchronizationImple< 0:ffffac110002:-69b8798a:539b5f01:69f, org.hibernate.engine.transaction.synchronization.internal.RegisteredSynchronization@14809963 >: javax.persistence.OptimisticLockException: org.hibernate.StaleObjectStateException: Row was updated or deleted by another transaction (or unsaved-value mapping was incorrect): [org.drools.persistence.info.SessionInfo#2]
+	at org.hibernate.ejb.AbstractEntityManagerImpl.wrapStaleStateException(AbstractEntityManagerImpl.java:1416) [hibernate-entitymanager-4.2.0.SP1-redhat-1.jar:4.2.0.SP1-redhat-1]
+
+.....
+
+16:47:36,359 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadA:  p1 = 7 : will now sleep
+16:47:41,359 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadA:  i'm back
+
+
+==== SINGLETON KIE Session Strategy
 
 
 
