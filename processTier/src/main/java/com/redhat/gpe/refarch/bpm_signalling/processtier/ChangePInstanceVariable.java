@@ -13,23 +13,22 @@ import org.apache.log4j.Logger;
 
 public class ChangePInstanceVariable implements WorkItemHandler {
 
-    public static final String SLEEP_TIME = "sleep.time";
+    public static final String SLEEP_TIME = "sleepTime";
     public static final String P1 = "p1";
 
     private static Logger log = Logger.getLogger("ChangePInstanceVariable");
     private int ksessionId = 0;
-    private int sleepTime = 0;
 
     public ChangePInstanceVariable(KieSession sessionObj) {
         ksessionId = sessionObj.getId();
-        sleepTime = Integer.parseInt(System.getProperty(SLEEP_TIME, "0L"));
     }
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         Integer p1 = (Integer)workItem.getParameter(P1);
+        Integer sleepTime = (Integer)workItem.getParameter(SLEEP_TIME);
         Long pInstanceId = workItem.getProcessInstanceId();
         p1++;
-        log.info("executeWorkItem() pInstanceId = "+pInstanceId+" : ksessionId = "+ksessionId+" : p1 = "+p1);
+        log.info("executeWorkItem() pInstanceId = "+pInstanceId+" : ksessionId = "+ksessionId+" : p1 = "+p1+" : sleepTime = "+sleepTime);
         try {
             Thread.sleep(sleepTime);
         }catch(Exception x) {

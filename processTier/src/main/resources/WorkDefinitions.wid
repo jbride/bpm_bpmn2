@@ -62,6 +62,7 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
     "name" : "UpdateAndSleep",
     "parameters" : [
         "taskP1" : new IntegerDataType(),
+        "sleepTime" : new IntegerDataType()
     ],
     "displayName" : "UPDATE and SLEEP",
     "icon" : "defaultservicenodeicon.png"
