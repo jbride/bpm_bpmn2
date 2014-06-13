@@ -23,11 +23,6 @@
       <artifactId>log4j</artifactId>
       <version>${version.log4j}</version>
     </dependency>
-    <dependency>
-      <groupId>com.redhat.gpe.refarch.bpm_signalling</groupId>
-      <artifactId>domain</artifactId>
-      <version>1.0</version>
-    </dependency>
   </dependencies>
 
   <build>
@@ -86,11 +81,6 @@
                 </propertiesSystem>
             </configuration>
             <dependencies>
-                <dependency>
-                    <groupId>com.redhat.gpe.refarch.bpm_signalling</groupId>
-                    <artifactId>domain</artifactId>
-                    <version>1.0</version>
-                </dependency>
                 <dependency>
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
