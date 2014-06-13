@@ -1,6 +1,6 @@
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <kbase name="bpmsignalling" default="true" eventProcessingMode="cloud" equalsBehavior="equality" declarativeAgenda="disabled" scope="javax.enterprise.context.ApplicationScoped" packages="*">
-    <ksession name="bpmsignalling" type="stateful" default="true" clockType="realtime" scope="javax.enterprise.context.ApplicationScoped">
+  <kbase name="bpmsignalling_base" default="true" eventProcessingMode="cloud" equalsBehavior="identity" declarativeAgenda="disabled" scope="javax.enterprise.context.ApplicationScoped" packages="*">
+    <ksession name="bpmsignalling_session" type="stateful" default="true" clockType="realtime" scope="javax.enterprise.context.ApplicationScoped">
       <workItemHandlers>
         <workItemHandler type="new com.redhat.gpe.refarch.bpm_signalling.processtier.ChangePInstanceVariable(ksession)" name="UpdateAndSleep"/>
       </workItemHandlers>
