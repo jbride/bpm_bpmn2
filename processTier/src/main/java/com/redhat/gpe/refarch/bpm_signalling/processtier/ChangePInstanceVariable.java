@@ -28,10 +28,10 @@ public class ChangePInstanceVariable implements WorkItemHandler {
             p1 = (Integer)workItem.getParameter(P1);
         Long pInstanceId = workItem.getProcessInstanceId();
         p1++;
-        log.info("executeWorkItem() pInstanceId = "+pInstanceId+" : ksessionId = "+ksessionId+" : p1 = "+p1 );
+        log.info("executeWorkItem() ksessionId = "+ksessionId+" : pInstanceId = "+workItem.getProcessInstanceId()+" : workItemId = "+workItem.getId()+" : p1 = "+p1 );
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        log.warn("Not supported yet.");
+        log.warn("abortWorkItem() ksessionId = "+ksessionId+" : pInstanceId = "+workItem.getProcessInstanceId()+" : workItemId = "+workItem.getId());
     }
 }

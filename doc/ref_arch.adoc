@@ -19,7 +19,11 @@ image::images/rhheader.png[width=900]
 == Procedure
 * For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the root directory of this reference architecture.
 
-curl -vv -u jboss:brms -X POST http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.concurrentPInstanceSignal/start?map_p1=5i
+start
+    curl -vv -u jboss:brms -X POST http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.concurrentPInstanceSignal/start?map_p1=5i
+
+signal
+    curl -vv -u jboss:brms -X GET 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.concurrentPInstanceSignal/start?map_p1=5i'
 
 == Performance Testing
 * JMeter is used to drive testing of the reference architecture.
