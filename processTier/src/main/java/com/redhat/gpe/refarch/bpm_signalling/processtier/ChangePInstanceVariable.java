@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 public class ChangePInstanceVariable implements WorkItemHandler {
 
     public static final String SLEEP_TIME = "sleepTime";
-    public static final String P1 = "p1";
+    public static final String P1 = "taskP1";
 
     private static Logger log = Logger.getLogger("ChangePInstanceVariable");
     private int ksessionId = 0;
