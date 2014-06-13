@@ -25,7 +25,7 @@ public class ChangePInstanceVariable implements WorkItemHandler {
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         Integer p1 = (Integer)workItem.getParameter(P1);
-        Integer sleepTime = (Integer)workItem.getParameter(SLEEP_TIME);
+        Integer sleepTime = Integer.parseInt((String)workItem.getParameter(SLEEP_TIME));
         Long pInstanceId = workItem.getProcessInstanceId();
         p1++;
         log.info("executeWorkItem() pInstanceId = "+pInstanceId+" : ksessionId = "+ksessionId+" : p1 = "+p1+" : sleepTime = "+sleepTime);
