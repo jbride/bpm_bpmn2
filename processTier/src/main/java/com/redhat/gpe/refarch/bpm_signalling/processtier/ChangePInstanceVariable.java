@@ -26,7 +26,7 @@ public class ChangePInstanceVariable implements WorkItemHandler {
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         Integer p1 = 0;
         if(workItem.getParameter(P1) != null)
-            p1 = Integer.parseInt((String)workItem.getParameter(P1));
+            p1 = (Integer)workItem.getParameter(P1);
         Integer sleepTime = 0;
         if(workItem.getParameter(SLEEP_TIME) != null)
             sleepTime = Integer.parseInt((String)workItem.getParameter(SLEEP_TIME));
