@@ -7,11 +7,10 @@ image::doc/images/rhheader.png[width=900]
 :numbered!:
 
 == PURPOSE:
-The primary purpose of a Business Process Management (BPM) solution is to manage the wait-state of long running business process instances.
+One of the primary purpose of a Business Process Management (BPM) solution is to manage the wait-state of long running business process instances.
 Typically, the process instance is _signalled_ so as to re-load the process instance from its wait-state and advance it to the next node in the process definition.
 Red Hat's BPM Suite 6 product includes extensive support for signalling of long running process instances in a wait-state.
 
 The purpose of this reference architecture is deep-dive into the _signalling_ capabilities of BPM Suite 6.
 
-This reference architecture includes a BPM Suite 6 _KIE project_ that showcase a variety of advanced _signalling_ use-cases.
-This reference architecture also includes a {ref_arch_doc} that demonstrates use of the included _KIE project_ and its signalling uses-cases.
+This reference architecture includes a BPM Suite 6 _KIE project_ and {ref_arch_doc} that showcase a variety of advanced _signalling_ use-cases.
