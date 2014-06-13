@@ -1,1 +1,9 @@
-<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <kbase name="bpmsignalling" default="true" eventProcessingMode="cloud" equalsBehavior="identity">
+    <ksession name="bpmsignalling" type="stateless" default="true" clockType="realtime">
+      <workItemHandlers>
+        <workItemHandler type="new com.redhat.gpe.refarch.bpm_signalling.processtier.ChangePInstanceVariable(ksession)" name="UpdateAndSleep"/>
+      </workItemHandlers>
+    </ksession>
+  </kbase>
+</kmodule>
