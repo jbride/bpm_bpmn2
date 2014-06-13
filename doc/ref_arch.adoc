@@ -1,6 +1,8 @@
 :data-uri:
 :toc2:
 :rhtlink: link:https://www.redhat.com[Red Hat]
+:bpmproduct: link:https://access.redhat.com/site/documentation/en-US/Red_Hat_JBoss_BPM_Suite/[Red Hat's BPM Suite 6 product]
+:dockerbpms: link:https://github.com/jboss-gpe-ose/docker_bpms/blob/master/doc/userguide.adoc[docker_bpms]
 
 image::images/rhheader.png[width=900]
 
@@ -16,15 +18,74 @@ image::images/rhheader.png[width=900]
 
 == Pre-Requisites
 
+. ssh client
+. maven 3.0.5 (or greater)
+. git client
+. curl
+. familiarity with {bpmproduct}
+. proficiency with basic *nix command line
+. docker
+. either the mysql or postgresql variant of the {dockerbpms} image
+
 == Procedure
-* For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the root directory of this reference architecture.
+For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the root directory of this reference architecture.
 
-start
-    curl -vv -u jboss:brms -X POST http://docker:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/processTier.concurrentPInstanceSignal/start?map_p1=5i
+=== Start BPM Suite 6
+As per the {dockerbpms} documentation, pull and start either the mysql or postgresql variants.
 
-signal
-    curl -vv -u jboss:brms -X POST 'http://docker:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/instance/42/signal?signal=reloadA'
-    curl -vv -u jboss:brms -X POST 'http://docker:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/instance/42/signal?signal=reloadB'
+For the purposes of this documentation, the name *docker_bpms* will refer to the ip address of your bpm enabled docker container.
+A suggestion would be to add an entry in your /etc/hosts that maps *docker_bpms* to the ip address of your docker container:
+
+-----
+172.17.0.2      docker_bpms
+-----
+
+NOTE:  the ip address of your docker container is most likely different than the example above.
+Check the {dockerbpms} user guide on how to determine the ip address.
+
+=== Log into BPM Suite 6
+
+. As per the {dockerbpms} user guide, ssh into the bpm enabled docker container and tail the server.log.
+. Via your browser, login to business-central.
+
+=== clone *bpm_signalling* repo
+Create an organization unit and clone this git repository as follows:
+
+image::images/clone.png[]
+
+=== Deploy *processTier* KIE project
+
+image::images/new_deployment.png[]
+
+
+== *concurrentPInstanceSignal* process instance
+
+image::images/concurrentPInstanceSignal.png[]
+
+=== start *concurrentPInstanceSignal* instance
+
+------
+curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/processTier.concurrentPInstanceSignal/start?map_p1=5i
+------
+
+The server.log of BPM Suite 6 will include a statement similar to the following:
+
+------
+[ChangePInstanceVariable] executeWorkItem() ksessionId = 2 : pInstanceId = 11 : workItemId = 1 : p1 = 6
+
+------
+
+Make note of the value of the  _pInstanceId_ .  This value will be used in the next section of this reference architecture.
+
+=== signal *concurrentPInstanceSignal* instance
+
+-----
+curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/instance/11/signal?signal=reloadA'
+-----
+
+-----
+curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/process/instance/11/signal?signal=reloadB'
+-----
 
 ConcurrentPInstanceSignal process branches as follows:
 
@@ -33,34 +94,6 @@ Thus, a wait state of the process instance is invoked.
 . *reloadA* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
 . *reloadB* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
 
-image::images/concurrentPInstanceSignal.png[]
 
-image::images/new_deployment.png[]
-
-completeWorkItem
-    curl -vv -u jboss:brms -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/workitem/30/complete?map_p1=5i'
-
-== Performance Testing
-* JMeter is used to drive testing of the reference architecture.
-* You do not need to download a seperate JMeter binary nor source distribution
-* Instead, JMeter will be downloaded, installed and appropriately configured as part of the configuration found in $REF_ARCH_HOME/loadtest
-* jmeter maven plugin
-** Notice use of the com.lazerycode.jmeter:jmeter-maven-plugin in _$REF_ARCH_HOME/loadtest/pom.xml_ 
-** This maven plugin downloads, installs and appropriately configures JMeter
-** This maven plugin is also used to drive test scenarios
-* ref_arch.jmx
-** A sample default jmeter load test definition file is included in: $REF_ARCH_HOME/loadtest/src/test/jmeter/ref_arch.jmx
-** This jmeter load test definition file can be viewed and manipulated via the JMeter GUI by:
-*** cd $REF_ARCH_HOME/loadtest
-** Notice that the default, OOB configuration is to spawn a single client that invokes a single test case
-** ./jmeter_gui.sh
-* Java Sampler
-** Also included is an example Java _Sampler_ at:  $REF_ARCH_HOME/loadtest/src/test/java/com/redhat/gpe/refarch/bpm_signalling/loadtest/ExampleJMeterClient.java
-** The use of a JMeter _sampler_ class is optional
-** cd $REF_ARCH_HOME/loadtest
-** mvn clean verify
 
 == To-Do
-. resolve this problem
-. resolve that problem
-=======
