@@ -142,7 +142,7 @@ curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/ru
 
 16:47:36,359 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadA:  p1 = 7 : will now sleep
 16:47:41,359 INFO  [stdout] concurrentPInstanceSignal.updateOnly() reloadA:  i'm back
-
+-----
 
 ==== SINGLETON KIE Session Strategy
 
