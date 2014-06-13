@@ -23,7 +23,11 @@ start
     curl -vv -u jboss:brms -X POST http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.concurrentPInstanceSignal/start?map_p1=5i
 
 signal
-    curl -vv -u jboss:brms -X GET 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.concurrentPInstanceSignal/start?map_p1=5i'
+    curl -vv -u jboss:brms -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/instance/42/signal?signal=reloadA'
+    curl -vv -u jboss:brms -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/instance/42/signal?signal=reloadB'
+
+completeWorkItem
+    curl -vv -u jboss:brms -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/workitem/30/complete?map_p1=5i'
 
 == Performance Testing
 * JMeter is used to drive testing of the reference architecture.
