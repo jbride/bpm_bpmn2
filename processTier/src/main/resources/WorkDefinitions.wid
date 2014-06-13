@@ -59,11 +59,11 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
   ],
 
 [
-    "name" : "UpdateAndSleep",
+    "name" : "StartWaitState",
     "parameters" : [
         "taskP1" : new IntegerDataType()
     ],
-    "displayName" : "UPDATE and SLEEP",
+    "displayName" : "StartWaitState",
     "icon" : "defaultservicenodeicon.png"
   ]
 
