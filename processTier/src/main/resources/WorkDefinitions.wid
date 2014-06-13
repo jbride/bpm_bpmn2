@@ -63,8 +63,6 @@ import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
     "parameters" : [
         "taskP1" : new IntegerDataType(),
     ],
-    "results" : [
-    ],
     "displayName" : "CONCURRENT SIGNAL",
     "icon" : "defaultservicenodeicon.png"
   ]
