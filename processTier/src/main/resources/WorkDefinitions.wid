@@ -1,5 +1,6 @@
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
 
 [
   [
@@ -54,6 +55,17 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
         "Result" : new ObjectDataType(),
     ],
     "displayName" : "REST",
+    "icon" : "defaultservicenodeicon.png"
+  ],
+
+[
+    "name" : "ConcurrentSignal",
+    "parameters" : [
+        "taskP1" : new IntegerDataType(),
+    ],
+    "results" : [
+    ],
+    "displayName" : "CONCURRENT SIGNAL",
     "icon" : "defaultservicenodeicon.png"
   ]
 
