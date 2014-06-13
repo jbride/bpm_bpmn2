@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 public class ChangePInstanceVariable implements WorkItemHandler {
 
-    public static final String SLEEP_TIME = "sleepTime";
     public static final String P1 = "taskP1";
 
     private static Logger log = Logger.getLogger("ChangePInstanceVariable");
@@ -27,17 +26,9 @@ public class ChangePInstanceVariable implements WorkItemHandler {
         Integer p1 = 0;
         if(workItem.getParameter(P1) != null)
             p1 = (Integer)workItem.getParameter(P1);
-        Integer sleepTime = 0;
-        if(workItem.getParameter(SLEEP_TIME) != null)
-            sleepTime = Integer.parseInt((String)workItem.getParameter(SLEEP_TIME));
         Long pInstanceId = workItem.getProcessInstanceId();
         p1++;
-        log.info("executeWorkItem() pInstanceId = "+pInstanceId+" : ksessionId = "+ksessionId+" : p1 = "+p1+" : sleepTime = "+sleepTime);
-        try {
-            Thread.sleep(sleepTime);
-        }catch(Exception x) {
-            throw new RuntimeException(x);
-        }
+        log.info("executeWorkItem() pInstanceId = "+pInstanceId+" : ksessionId = "+ksessionId+" : p1 = "+p1 );
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
