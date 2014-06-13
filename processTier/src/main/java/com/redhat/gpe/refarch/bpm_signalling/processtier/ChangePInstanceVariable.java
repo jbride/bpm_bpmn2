@@ -37,6 +37,6 @@ public class ChangePInstanceVariable implements WorkItemHandler {
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        log.warn("Not supported yet.");
     }
 }
