@@ -2,7 +2,7 @@
   <kbase name="bpmsignalling_base" default="true" eventProcessingMode="cloud" equalsBehavior="identity" declarativeAgenda="disabled" scope="javax.enterprise.context.ApplicationScoped" packages="*">
     <ksession name="bpmsignalling_session" type="stateful" default="true" clockType="realtime" scope="javax.enterprise.context.ApplicationScoped">
       <workItemHandlers>
-        <workItemHandler type="new com.redhat.gpe.refarch.bpm_signalling.processtier.ChangePInstanceVariable(ksession)" name="StartWaitState"/>
+        <workItemHandler type="new com.redhat.gpe.refarch.bpm_signalling.processtier.StartWaitState(ksession)" name="StartWaitState"/>
       </workItemHandlers>
     </ksession>
   </kbase>
