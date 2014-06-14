@@ -1,6 +1,5 @@
 package com.redhat.gpe.refarch.bpm_signalling.processtier;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,14 +10,14 @@ import org.kie.api.runtime.process.WorkItemHandler;
 
 import org.apache.log4j.Logger;
 
-public class ChangePInstanceVariable implements WorkItemHandler {
+public class StartWaitState implements WorkItemHandler {
 
     public static final String P1 = "taskP1";
 
-    private static Logger log = Logger.getLogger("ChangePInstanceVariable");
+    private static Logger log = Logger.getLogger("StartWaitState");
     private int ksessionId = 0;
 
-    public ChangePInstanceVariable(KieSession sessionObj) {
+    public StartWaitState(KieSession sessionObj) {
         ksessionId = sessionObj.getId();
     }
 
@@ -26,7 +25,6 @@ public class ChangePInstanceVariable implements WorkItemHandler {
         Integer p1 = 0;
         if(workItem.getParameter(P1) != null)
             p1 = (Integer)workItem.getParameter(P1);
-        p1++;
         log.info("executeWorkItem() ksessionId = "+ksessionId+" : pInstanceId = "+workItem.getProcessInstanceId()+" : workItemId = "+workItem.getId()+" : p1 = "+p1 );
     }
 
