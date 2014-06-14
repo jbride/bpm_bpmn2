@@ -62,23 +62,62 @@ This section of the documentation provides guidance on cloning of this reference
 +
 image::images/clone.png[]
 +
+In particular, repository values should be as follows:
 ... *Repository Name* :   bpmsignalling
+... *Organizational Unit* :   replace with your organization name
 ... *Git URL* :  https://github.com/jboss-gpe-ref-archs/bpm_signalling
 
 
 === Deploy *processTier* KIE project
+The bpmsignalling repository includes a single _KIE project_ called:  _processTier_.
+This KIE project includes a variety of BPMN2 process definitions and custom workItemHandlers that show-case the signalling capabilities of BPM Suite 6.
+Deployment of the _processTier_ project is needed to make its contents avaiable for use by the BPM Suite 6 process engine.
 
+. In the BPM Console,navigate to:  Deploy -> Deployments -> New Deployment Unit
+. A pop-up should appear as per below.
++
 image::images/new_deployment.png[]
+. Populate the contents of that pop-up as follows and press the `Deploy Unit` button:
+.. *Group ID*:  com.redhat.gpe.refarch.bpm_signalling
+.. *Artifact*:  processTier
+.. *Version*:   1.0
+.. *Runtime strategy*:  Process instance
+.. *Kie Base Name*: bpmsignalling_base
+.. *Kie Session Name*:  bpmsignalling_session
+
+Of particular importance is the value of the *Runtime strategy*.
+For the purpose of this reference architecture, the following KIE Session strategies will be used :
+
+. *SINGLETON*
++
+Default KIE Session strategy.
+A single KIE session exists for each _Deployment Unit_.
+JPA based KIE sessions are single-threaded.
+Thus, if the KIE session is configured for JPA persistence and the KIE session strategy is selected as _SINGLETON_, then only one request can be handled at any given time per deployment unit.
+This combination is probably fine for POCs and demos but is often times not ideal in high-volume production environments.
+
+In-memory based KIE sessions are multi-threaded and do allow for concurrent requests to the process engine for a deployment unit.
+In-memory KIE sessions are often use-ful for BPM use-cases that do not include a wait-state.
+Thus, if an in-memory KIE session is configured and the KIE session strategy is selected as _SINGELTON, then typically a huge volume of requests can be handled by the _SINGLETON_ session per deployment unit.
+. *PER_PROCESS_INSTANCE*
++
+A KIE session is dedicated for the life of a process instance.
+Often used in production environments in conjunction with a JPA based KIE session.
+The combination of _PER_PROCESS_INSTANCE_ KIE session strategy with a JPA configured KIE session allows for concurrency of the process engine within a deployment unit.
 
 
 == *concurrentPInstanceSignal* process instance
 
 image::images/concurrentPInstanceSignal.png[]
 
-ConcurrentPInstanceSignal process branches as follows:
+The _ConcurrentPInstanceSignal_ BPMN2 process branches as follows:
 
-. *StartWaitState* node:  updates p1 variable and does not call workItemManager.completeWorkItem().
-Thus, a wait state of the process instance is invoked.
+. branch with *StartWaitState* ServiceTask:
+This is the main branch of the process and is initiated when a the process instance is started.
+_StartWaitState_ Service Task is mapped to a custom work item handler included in the _processTier_ project called:  com.redhat.gpe.refarch.bpm_signalling.processTier.StartWaitState.
+This custom WIH does nothing but log its state.
+Most importantly, it intentionally does *not* call: workItemManager.completeWorkItem().
+Thus, a wait state of the process instance is invoked at this node.
 . *reloadA* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
 . *reloadB* catching signal event:  routes to update script task that increments p1 and sleeps for 5 seconds
 
@@ -92,7 +131,7 @@ curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/run
 The server.log of BPM Suite 6 will include a statement similar to the following:
 
 ------
-[ChangePInstanceVariable] executeWorkItem() ksessionId = 2 : pInstanceId = 11 : workItemId = 1 : p1 = 6
+[StartWaitState] executeWorkItem() ksessionId = 2 : pInstanceId = 11 : workItemId = 1 : p1 = 5
 
 ------
 
