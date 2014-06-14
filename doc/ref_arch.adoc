@@ -34,19 +34,19 @@ For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the 
 As per the {dockerbpms} documentation, pull and start either the mysql or postgresql variants.
 
 For the purposes of this documentation, the name *docker_bpms* will refer to the ip address of your bpm enabled docker container.
-It is recommended that an entry in /etc/hosts be added that maps *docker_bpms* to the ip address of your docker container:
+It is recommended that an entry in /etc/hosts be added that maps *docker_bpms* to the actual ip address of your docker container:
 
 -----
 172.17.0.2      docker_bpms
 -----
 
 NOTE:  the ip address of your docker container is most likely different than the example above.
-Check the {dockerbpms} user guide on how to determine the ip address.
+Check the {dockerbpms} user guide regarding how to determine the ip address.
 
 === Log into BPM Suite 6
 
 . As per the {dockerbpms} user guide, ssh into the bpm enabled docker container and tail the server.log.
-. Via your browser, login to business-central.
+. As per the {dockerbpms} user guide, login to the BPM Console.
 
 === clone *bpm_signalling* repo
 This reference architecture includes a _KIE project_ called _processTier_ that includes various BPM signalling use cases.
@@ -55,7 +55,8 @@ This section of the documentation provides guidance on cloning of this reference
 . Create an organization unit
 .. In the BPM Console, navigate to:  Authoring -> Administration -> Organizational Units -> Manage Organizational Units
 .. Click the _Add_ button and enter in your organizational unit name
-+ Any name will do.  We in Red Hat's Global Partner Enablement team typically use an organization name of:  _gpe_.
++
+Any name will do.  We in Red Hat's Global Partner Enablement team typically use an organization name of:  _gpe_.
 . clone this git repository as follows:
 .. In the BPM Console, naviate to:  Authoring -> Administration -> Repositories -> Clone Repositories
 .. Enter in values as per below:
