@@ -127,7 +127,14 @@ Thus, a wait state of the process instance is invoked at this node.
 
 In this reference architecture, an instance of the _ConcurrentPInstanceSignal_ BPMN2 process will be invoked via the REST API of the BPM Suite 6 Execution Server.
 
+NOTE: Two instances of the _ConcurrentPInstanceSignal_ process will be instantiated and signalled.
+The first process instance will be instantiated and signalled using a _PER_PROCESS_INSTANCE_ KIE session strategy.
+The second process instance will be instantiated and signalled using a _SINGLETON_ KIE session strategy.
+
 === start *ConcurrentPInstanceSignal* instance
+If this is the first time instantiating a _ConcurrentPInstanceSignal_ process, then ensure the the deployment unit is using a _PER_PROCESS_INSTANCE_ KIE session strategy.
+If this is the second time instantiating a _ConcurrentPInstanceSignal_ process, then switch the deployment unit to use a _SINGLETON_ KIE session strategy.
+
 In a terminal window in your local environment, execute the following command to initiate an instance of the _ConcurrentPInstanceSignal_ process :
 
 ------
@@ -176,6 +183,8 @@ Subsequently, execute the above two curl commands within 5 seconds of each other
 === Results
 
 ==== PER_PROCESS_INSTANCE KIE Session Strategy
+This section discusses the results of having instantiated and signalled the _ConcurrentPInstanceSignal_ process using a deployment unit configured for a _PER_PROCESS_INSTANCE_ KIE session.
+
 A process engine configured to use a JPA enabled KIE session whose strategy is of type PER_PROCESS_INSTANCE gracefully handles concurrent signals to the same active process instance.
 The expected final value of the _p1_ process instance variable is 7 (initial value of 5 plus incrementing by 1 by each signal branch).
 To view the final value of the _p1_ process instance, execute the following:
@@ -212,6 +221,12 @@ The _routeA_ branch, owning the olderof the two OptimisticLock timestamps on the
 The BPM Suite 6 process engine detected this condition and automatically retried the execution of the _reloadA_ branch with a new OptimisticLock timestamp.
 
 ==== SINGLETON KIE Session Strategy
+This section discusses the results of having instantiated and signalled the _ConcurrentPInstanceSignal_ process using a deployment unit configured for a _SINGLETON_ KIE session.
+
+A process engine configured to use a JPA enabled KIE session whose strategy is of type SINGLETON gracefully handles concurrent signals to the same active process instance.
+This is expected to be the case as a JPA enabled SINGLETON KIE session is single-threaded.
+The request from the curl client that invoked the _reloadA_ branch was processed first while the process engine operated in a _synchronized{..} block of code.
+The request from the curl client that invoked the _reloadB_ branch was blocked until the completion of processing on the _reloadA_ branch.
 
 
 
