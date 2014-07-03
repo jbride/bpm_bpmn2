@@ -8,7 +8,7 @@ image::images/rhheader.png[width=900]
 
 :numbered!:
 [abstract]
-== JBoss GPE Reference Architecture:  Template
+== JBoss GPE Reference Architecture:  BPM Signaling
 
 :numbered:
 
@@ -49,7 +49,7 @@ Check the {dockerbpms} user guide regarding how to determine the ip address.
 . As per the {dockerbpms} user guide, login to the BPM Console.
 
 === clone *bpm_signalling* repo
-This reference architecture includes a _KIE project_ called _processTier_ that includes various BPM signalling use cases.
+This reference architecture includes a _KIE project_ called _processTier_ that includes various BPM signaling use cases.
 This section of the documentation provides guidance on cloning of this reference architecture in BPM Suite 6.
 
 . Create an organization unit
@@ -72,8 +72,8 @@ In particular, repository values should be as follows:
 
 === Deploy *processTier* KIE project
 The _bpmsignalling_ repository includes a single _KIE project_ called:  _processTier_.
-This KIE project includes a variety of BPMN2 process definitions and custom workItemHandlers that show-case the signalling capabilities of BPM Suite 6.
-Deployment of the _processTier_ project is needed to make its contents avaiable for use by the BPM Suite 6 process engine.
+This KIE project includes a variety of BPMN2 process definitions and custom workItemHandlers that show-case the signaling capabilities of BPM Suite 6.
+Deployment of the _processTier_ project is needed to make its contents available for use by the BPM Suite 6 process engine.
 
 . In the BPM Console,navigate to:  Deploy -> Deployments -> New Deployment Unit
 . A pop-up should appear as per below.
@@ -111,7 +111,7 @@ The combination of _PER_PROCESS_INSTANCE_ KIE session strategy with a JPA config
 
 
 == *ConcurrentPInstanceSignal* process
-Often times, it is possible that signals could be invoked on a process instance that is in a wait state at the same time.
+Often times, it is possible that multiple signals could be invoked on a process instance that is in a wait state at the same time.
 A business application should not have to concern itself with ensuring that external signals to a process instance in a wait state are synchronized.
 Instead, the process engine should be able to handle concurrent signals to the same process instance in a graceful manner.
 The purpose of the *ConcurrentPInstanceSignal* process is to demonstrate the behavior of the BPM Suite 6 process engine when concurrent signals are invoked on the same process instance in a wait-state.
@@ -136,9 +136,9 @@ routes to update script task that increments p1 and sleeps for 5 seconds
 
 In this reference architecture, an instance of the _ConcurrentPInstanceSignal_ BPMN2 process will be invoked via the REST API of the BPM Suite 6 Execution Server.
 
-NOTE: Two instances of the _ConcurrentPInstanceSignal_ process will be instantiated and signalled.
-The first process instance will be instantiated and signalled using a _PER_PROCESS_INSTANCE_ KIE session strategy.
-The second process instance will be instantiated and signalled using a _SINGLETON_ KIE session strategy.
+NOTE: Two instances of the _ConcurrentPInstanceSignal_ process will be instantiated and signaled.
+The first process instance will be instantiated and signaled using a _PER_PROCESS_INSTANCE_ KIE session strategy.
+The second process instance will be instantiated and signaled using a _SINGLETON_ KIE session strategy.
 
 === start *ConcurrentPInstanceSignal* instance
 If this is the first time instantiating a _ConcurrentPInstanceSignal_ process, then ensure the the deployment unit is using a _PER_PROCESS_INSTANCE_ KIE session strategy.
@@ -189,10 +189,23 @@ curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/ru
 That forces the KIE session used for this process instance to be active for 5 seconds.
 Subsequently, execute the above two curl commands within 5 seconds of each other to view the behavior of the process engine when two signals are made to the same active process instance.
 
+=== Complete the process
+At this point two of the three parallel legs in the process have finished execution, but the middle leg is still in a wait state.  Use the following command to send a signal
+that work of the task node has been completed, so that the process may continue to completion.
+
+. In a command terminal, copy the following command
+-----
+curl -vv -u jboss:jbosspw1! -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/workitem/3/complete?runtimeProcInstId=3'
+-----
+
+. Replace the workitem number and the process Instance Id in the command with values that match your server log, then execute the command.
+
+The process instance terminates as a result.
+
 === Results
 
 ==== PER_PROCESS_INSTANCE KIE Session Strategy
-This section discusses the results of having instantiated and signalled the _ConcurrentPInstanceSignal_ process using a deployment unit configured for a _PER_PROCESS_INSTANCE_ KIE session.
+This section discusses the results of having instantiated and signaled the _ConcurrentPInstanceSignal_ process using a deployment unit configured for a _PER_PROCESS_INSTANCE_ KIE session.
 
 A process engine configured to use a JPA enabled KIE session whose strategy is of type PER_PROCESS_INSTANCE gracefully handles concurrent signals to the same active process instance.
 The expected final value of the _p1_ process instance variable is 7 (initial value of 5 plus incrementing by 1 by each signal branch).
@@ -226,11 +239,11 @@ Evidence of this process instance state conflict can be bound in the server.log 
 
 Notice the OptimisticLockException thrown by the _routeA_ branch of the process instance.
 The _routeB_ branch, owning the most recent of the two OptimisticLock timestamps on the KIE session, won the right to persist its state to the database.
-The _routeA_ branch, owning the olderof the two OptimisticLock timestamps on the KIE session, lost the right to persist its state to the database.
+The _routeA_ branch, owning the older of the two OptimisticLock timestamps on the KIE session, lost the right to persist its state to the database.
 The BPM Suite 6 process engine detected this condition and automatically retried the execution of the _reloadA_ branch with a new OptimisticLock timestamp.
 
 ==== SINGLETON KIE Session Strategy
-This section discusses the results of having instantiated and signalled the _ConcurrentPInstanceSignal_ process using a deployment unit configured for a _SINGLETON_ KIE session.
+This section discusses the results of having instantiated and signaled the _ConcurrentPInstanceSignal_ process using a deployment unit configured for a _SINGLETON_ KIE session.
 
 A process engine configured to use a JPA enabled KIE session whose strategy is of type SINGLETON gracefully handles concurrent signals to the same active process instance.
 This is expected to be the case as a JPA enabled SINGLETON KIE session is single-threaded.
