@@ -195,7 +195,7 @@ that work of the task node has been completed, so that the process may continue 
 
 . In a command terminal, copy the following command
 -----
-curl -vv -u jboss:jbosspw1! -X POST 'http://localhost:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/workitem/3/complete?runtimeProcInstId=3'
+curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0:bpmsignalling_base:bpmsignalling_session/workitem/3/complete?runtimeProcInstId=3'
 -----
 
 . Replace the workitem number and the process Instance Id in the command with values that match your server log, then execute the command.
