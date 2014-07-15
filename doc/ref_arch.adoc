@@ -101,7 +101,7 @@ This combination is probably fine for POCs and demos but is often times not idea
 +
 In-memory based KIE sessions are multi-threaded and do allow for concurrent requests to the process engine for a deployment unit.
 In-memory KIE sessions are often use-ful for BPM use-cases that do not include a wait-state.
-Thus, if an in-memory KIE session is configured and the KIE session strategy is selected as _SINGELTON, then typically a huge volume of requests can be handled by the _SINGLETON_ session per deployment unit.
+Thus, if an in-memory KIE session is configured and the KIE session strategy is selected as _SINGELTON_, then typically a huge volume of requests can be handled by the process engine.
 
 . *PER_PROCESS_INSTANCE*
 +
@@ -190,8 +190,8 @@ That forces the KIE session used for this process instance to be active for 5 se
 Subsequently, execute the above two curl commands within 5 seconds of each other to view the behavior of the process engine when two signals are made to the same active process instance.
 
 === Complete the process
-At this point two of the three parallel legs in the process have finished execution, but the middle leg is still in a wait state.  Use the following command to send a signal
-that work of the task node has been completed, so that the process may continue to completion.
+At this point two of the three parallel legs in the process have finished execution, but the middle leg is still in a wait state.  
+Use the following command to send a signal that work of the task node has been completed, so that the process may continue to completion.
 
 . In a command terminal, copy the following command
 -----
@@ -201,6 +201,17 @@ curl -vv -u jboss:brms -X POST 'http://docker_bpms:8080/business-central/rest/ru
 . Replace the workitem number and the process Instance Id in the command with values that match your server log, then execute the command.
 
 The process instance terminates as a result.
+
+==== Programmatic retrieval of workItemId ?
+
+Is our recommendation to expose a custom API that queries the database ?
+
+-----
+jbpm=# select workitemid from workiteminfo where processinstanceid=19 and name='StartWaitState';
+ workitemid 
+------------
+         12
+-----
 
 === Results
 
@@ -250,6 +261,23 @@ This is expected to be the case as a JPA enabled SINGLETON KIE session is single
 The request from the curl client that invoked the _reloadA_ branch was processed first while the process engine operated in a _synchronized{..} block of code.
 The request from the curl client that invoked the _reloadB_ branch was blocked until the completion of processing on the _reloadA_ branch.
 
+
+== Signal Sub-Process
+
+image::images/signalsubprocess.png[]
+image::images/subprocess.png[]
+
+=== Determine the sub-process instanceId
+
+Is our recommendation to determine the sub-process instanceId by exposing an API that queries the database ?
+-----
+jbpm=# select processinstanceid from processinstancelog where processid='processTier.subprocess' and parentprocessinstanceid=11;
+ processinstanceid 
+-------------------
+                12
+-----
+
+=== Signal the sub-process
 
 
 == To-Do
