@@ -5,9 +5,9 @@
   <groupId>com.redhat.gpe.refarch.bpm_signalling</groupId>
   <artifactId>processTier</artifactId>
   <version>1.0</version>
-  <packaging>kjar</packaging>
+  <packaging>jar</packaging>
   <name>processTier</name>
-  <repositories>
+  <!-- <repositories>
     <repository>
       <id>guvnor-m2-repo</id>
       <name>Guvnor M2 Repo</name>
@@ -23,5 +23,5 @@
         <extensions>true</extensions>
       </plugin>
     </plugins>
-  </build>
+  </build> -->
 </project>

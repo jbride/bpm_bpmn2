@@ -1,23 +1,24 @@
 package com.redhat.gpe.refarch.bpm_signalling.processtier;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkItemHandler;
-
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class StartWaitState implements WorkItemHandler {
 
     public static final String P1 = "taskP1";
+    public static final String SUB_PROCESS_ID = "sProcessId";
 
-    private static Logger log = Logger.getLogger("StartWaitState");
+    private static Logger log = LoggerFactory.getLogger("StartWaitState");
     private int ksessionId = 0;
+    private KieSession sessionObj = null;
 
     public StartWaitState(KieSession sessionObj) {
+        this.sessionObj = sessionObj;
         ksessionId = sessionObj.getId();
     }
 
@@ -25,6 +26,8 @@ public class StartWaitState implements WorkItemHandler {
         Integer p1 = 0;
         if(workItem.getParameter(P1) != null)
             p1 = (Integer)workItem.getParameter(P1);
+        ProcessInstance pInstance = sessionObj.getProcessInstance(workItem.getProcessInstanceId());
+        log.info("executeWorkItem() pInstance = "+pInstance);
         log.info("executeWorkItem() ksessionId = "+ksessionId+" : pInstanceId = "+workItem.getProcessInstanceId()+" : workItemId = "+workItem.getId()+" : p1 = "+p1 );
     }
 
