@@ -1,10 +1,10 @@
 package com.redhat.gpe.refarch.bpm_signalling.processtier;
 
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -26,7 +26,8 @@ public class StartWaitState implements WorkItemHandler {
         Integer p1 = 0;
         if(workItem.getParameter(P1) != null)
             p1 = (Integer)workItem.getParameter(P1);
-        ProcessInstance pInstance = sessionObj.getProcessInstance(workItem.getProcessInstanceId());
+        WorkflowProcessInstance pInstance = (WorkflowProcessInstance)sessionObj.getProcessInstance(workItem.getProcessInstanceId());
+        pInstance.setVariable(SUB_PROCESS_ID, workItem.getProcessInstanceId());
         log.info("executeWorkItem() pInstance = "+pInstance);
         log.info("executeWorkItem() ksessionId = "+ksessionId+" : pInstanceId = "+workItem.getProcessInstanceId()+" : workItemId = "+workItem.getId()+" : p1 = "+p1 );
     }
