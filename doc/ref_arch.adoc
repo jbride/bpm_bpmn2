@@ -23,7 +23,7 @@ A business application should not have to concern itself with ensuring that exte
 Instead, the process engine should be able to handle concurrent signals to the same process instance in a graceful manner.
 The purpose of the *ConcurrentPInstanceSignal* process is to demonstrate the behavior of the BPM Suite 6 process engine when concurrent signals are invoked on the same process instance in a wait-state.
 
-Details and instructions to execute this example can be found link:doc/concurrent_pinstance_signal.adoc[here].
+Details and instructions to execute this example can be found link:concurrent_pinstance_signal.adoc[here].
 
 
 == To-Do
