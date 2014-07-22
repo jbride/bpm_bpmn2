@@ -8,7 +8,7 @@
       <bpmn2:incoming>_8119683F-236C-49C6-BD09-7FC807AB9562</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="_E28F3848-074A-4A1F-811C-AB5FA4708D9A" drools:bgcolor="#000000" drools:selectable="true" sourceRef="processStartEvent" targetRef="_3561F66A-D62E-4AE7-A10F-44751D806590"/>
-    <bpmn2:callActivity id="_3561F66A-D62E-4AE7-A10F-44751D806590" drools:selectable="true" drools:independent="true" drools:waitForCompletion="true" name="subprocess" calledElement="processTier.subprocess">
+    <bpmn2:callActivity id="_3561F66A-D62E-4AE7-A10F-44751D806590" drools:selectable="true" drools:independent="true" drools:waitForCompletion="true" name="waitForSignal" calledElement="processTier.waitForSignal">
       <bpmn2:incoming>_E28F3848-074A-4A1F-811C-AB5FA4708D9A</bpmn2:incoming>
       <bpmn2:outgoing>_314BF9E9-F105-4346-98CF-8F8DC6D8E49B</bpmn2:outgoing>
     </bpmn2:callActivity>
