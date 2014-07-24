@@ -27,11 +27,17 @@ Details and instructions to execute this example can be found link:concurrent_pi
 
 === *Signal SubProcess Wait-State* 
 
+This example includes the following parent process and re-usable sub-process:
+
 .signalSubprocess
 image::images/signalSubprocess.png[]
+
 
 .waitForSignal sub-process
 image::images/waitForSignal.png[]
 
+
+The purpose of this example is to demonstrate the behavior of the process engine in processing of the two process instances when a signal is sent to the _catching signal event_ of the re-usable sub-process.
+Instructions to execute this example can be found link:signal_subprocess_waitstate.adoc[here].
 
 == To-Do
