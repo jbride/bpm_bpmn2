@@ -262,22 +262,4 @@ The request from the curl client that invoked the _reloadA_ branch was processed
 The request from the curl client that invoked the _reloadB_ branch was blocked until the completion of processing on the _reloadA_ branch.
 
 
-== Signal Sub-Process
-
-image::images/signalsubprocess.png[]
-image::images/subprocess.png[]
-
-=== Determine the sub-process instanceId
-
-Is our recommendation to determine the sub-process instanceId by exposing an API that queries the database ?
------
-jbpm=# select processinstanceid from processinstancelog where processid='processTier.subprocess' and parentprocessinstanceid=11;
- processinstanceid 
--------------------
-                12
------
-
-=== Signal the sub-process
-
-
 == To-Do

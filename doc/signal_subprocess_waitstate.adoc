@@ -1,0 +1,106 @@
+:data-uri:
+:toc2:
+
+image::images/rhheader.png[width=900]
+
+:numbered!:
+[abstract]
+== JBoss GPE Reference Architecture:  BPM Signaling
+
+:numbered:
+
+== Overview
+
+This example includes the following parent process and re-usable sub-process:
+
+.signalSubprocess
+image::images/signalSubprocess.png[]
+
+
+.waitForSignal sub-process
+image::images/waitForSignal.png[]
+
+
+The purpose of this example is to demonstrate the behavior of the process engine in processing of the two process instances when a signal is sent to the _catching signal event_ of the re-usable sub-process.
+
+== Pre-Requisites
+
+. ssh client
+. maven 3.0.5 (or greater)
+. git client
+. curl
+. familiarity with {bpmproduct}
+. proficiency with basic *nix command line
+. docker
+. either the mysql or postgresql variant of the {dockerbpms} image
+
+== Set-up
+For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the root directory of this reference architecture.
+
+=== Start BPM Suite 6
+As per the {dockerbpms} documentation, pull and start either the mysql or postgresql variants.
+
+For the purposes of this documentation, the name *docker_bpms* will refer to the ip address of your bpm enabled docker container.
+It is recommended that an entry in /etc/hosts be added that maps *docker_bpms* to the actual ip address of your docker container:
+
+-----
+172.17.0.2      docker_bpms
+-----
+
+NOTE:  the ip address of your docker container is most likely different than the example above.
+Check the {dockerbpms} user guide regarding how to determine the ip address.
+
+=== Log into BPM Suite 6
+
+. As per the {dockerbpms} user guide, ssh into the bpm enabled docker container and tail the server.log.
+. As per the {dockerbpms} user guide, login to the BPM Console.
+
+=== clone *bpm_signalling* repo
+This reference architecture includes a _KIE project_ called _processTier_ that includes various BPM signaling use cases.
+This section of the documentation provides guidance on cloning of this reference architecture in BPM Suite 6.
+
+. Create an organization unit
+.. In the BPM Console, navigate to:  Authoring -> Administration -> Organizational Units -> Manage Organizational Units
+.. Click the _Add_ button and enter in your organizational unit name
++
+Any name will do.  We in Red Hat's Global Partner Enablement team typically use an organization name of:  _gpe_.
+. clone this git repository as follows:
+.. In the BPM Console, naviate to:  Authoring -> Administration -> Repositories -> Clone Repositories
+.. Enter in values as per below:
++
+image::images/clone.png[]
++
+In particular, repository values should be as follows:
+
+... *Repository Name* :   bpmsignalling
+... *Organizational Unit* :   replace with your organization name
+... *Git URL* :  https://github.com/jboss-gpe-ref-archs/bpm_signalling
+
+
+=== Deploy *processTier* KIE project
+The _bpmsignalling_ repository includes a single _KIE project_ called:  _processTier_.
+This KIE project includes a variety of BPMN2 process definitions and custom workItemHandlers that show-case the signaling capabilities of BPM Suite 6.
+Deployment of the _processTier_ project is needed to make its contents available for use by the BPM Suite 6 process engine.
+For the purposes of this _signal_subprocess_waitstate_ example, the default _Singleton_ KIE session strategy is sufficient.
+
+. In the BPM Console,navigate to:  Authoring -> Tools -> Process Explorer
+. Click the _Build and Deploy_ button.
+
+== *Signal Subprocess Waitstate* :  Execution
+
+=== start *Signal Subprocess Waitstate* instance
+
+=== Determine the sub-process instanceId
+
+Is our recommendation to determine the sub-process instanceId by exposing an API that queries the database ?
+-----
+jbpm=# select processinstanceid from processinstancelog where processid='processTier.subprocess' and parentprocessinstanceid=11;
+ processinstanceid 
+-------------------
+                12
+-----
+
+=== Signal the sub-process
+
+
+== To-Do
