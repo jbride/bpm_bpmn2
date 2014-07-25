@@ -11,17 +11,19 @@ image::images/rhheader.png[width=900]
 
 == Overview
 
-This example includes the following parent process and re-usable sub-process:
+This example includes the following parent process:
 
 .signalSubprocess
 image::images/signalSubprocess.png[]
 
+and its re-usable sub-process:
 
 .waitForSignal sub-process
 image::images/waitForSignal.png[]
 
 
-The purpose of this example is to demonstrate the behavior of the process engine in processing of the two process instances when a signal is sent to the _catching signal event_ of the re-usable sub-process.
+The purpose of this refence architecture is to demonstrate the behavior of the process engine when a signal is sent to the _catching signal event_ (called _signalWaitStateA_ ) of the re-usable sub-process.
+Of note is the different behavior that occurs depending on if the KIE session strategy of the process engine is either _SINGLETON_ or _PER_PROCESS_INSTANCE_.
 
 == Pre-Requisites
 
@@ -77,23 +79,28 @@ In particular, repository values should be as follows:
 ... *Git URL* :  https://github.com/jboss-gpe-ref-archs/bpm_signalling
 
 
-== *Signal Subprocess Waitstate* :  SINGLETON Session
+== *Execution* 
+Included in the _bpmsignalling_ repository is a KIE project called:  _processTier_.
+The _processTier_ KIE project includes two process definitions called:  _signalSubprocess_ and _waitForSignal_.
+Process instances of these BPMN2 definitions will be instantiated.
+Subsequently, this reference architecture will demonstrate the behavior of the process engine when configured using the following KIE session strategies and then signalled by a remote client:
 
-=== Deploy *processTier* KIE project
-The _bpmsignalling_ repository includes a single _KIE project_ called:  _processTier_.
-This KIE project includes a variety of BPMN2 process definitions and custom workItemHandlers that show-case the signaling capabilities of BPM Suite 6.
-Deployment of the _processTier_ project is needed to make its contents available for use by the BPM Suite 6 process engine.
-This reference architecture will demonstrate the behavior of the process engine that occurs when signalled using different KIE session deployment strategies. 
+. SINGLETON
+. PER_PROCESS_INSTANCE
+
+=== *SINGLETON* Strategy
 The first scenario will involve using the default KIE session strategy:  SINGLETON
+A singleton KIE session produces a single-threaded process engine that remains alive and handles all requests for every process instance.
+
+==== SINGLETON: Deploy *processTier* KIE project
+Execute the following to create a deployment unit whose process engine utilizes a SINGLETON KIE session strategy.
 
 . In the BPM Console,navigate to:  Authoring -> Tools -> Process Explorer
 . Click the _Build and Deploy_ button.
 
-Doing so will create a deployment unit using a SINGLETON KIE session.
-A singleton KIE session produces a single-threaded process engine that remains alive and handles all requests for every process instance.
 
 
-=== start *Signal Subprocess Waitstate* instance
+==== SINGLETON: start *Signal Subprocess Waitstate* 
 
 In a terminal window in your local environment, execute the following command to initiate an instance of the _signalsubprocess_ process definition :
 
@@ -119,7 +126,12 @@ jbpm=# select instanceid, processid from processinstanceinfo;
 (2 rows)
 -----
 
-=== signal all instances managed by the SINGLETON Kie Session
+==== SINGLETON: signal pInstances
+This section of the reference architecture involves signalling the process instances that are now in a wait-state.
+The SINGLETON KIE session is knowledgeable of all process instances for a deployment unit
+Therefore, a signal to the this KIE session will be caught by all known process instances with a _capturing intermediary signal event_ of the same name as the signal.
+
+The following command sends a signal of name _signalWaitStateA_ to the KIE session of the deployment unit.
 
 ------
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/signal?signal=signalWaitStateA
@@ -136,9 +148,10 @@ INFO  [stdout] waitForSignal.print() ... completing subprocess
 Inspect the _jbpm_ database and notice that records for the previous two process instances no longer exist.
 The two process instanced have completed due to the _waitForSignal_ subprocess having been signaled.
 
-== *Signal Subprocess Waitstate* :  PER_PROCESS_INSTANCE Session
+=== *PER_PROCESS_INSTANCE* strategy
+The second scenario will involve using a KIE session strategy of:  PER_PROCESS_INSTANCE
 
-=== Determine the sub-process instanceId
+==== Determine the sub-process instanceId
 
 Is our recommendation to determine the sub-process instanceId by exposing an API that queries the database ?
 -----
