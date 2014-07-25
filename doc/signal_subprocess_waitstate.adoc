@@ -1,5 +1,7 @@
 :data-uri:
 :toc2:
+:bpmproduct: link:https://access.redhat.com/site/documentation/en-US/Red_Hat_JBoss_BPM_Suite/[Red Hat's BPM Suite 6 product]
+:dockerbpms: link:https://github.com/jboss-gpe-ose/docker_bpms/blob/master/doc/userguide.adoc[docker_bpms]
 
 image::images/rhheader.png[width=900]
 
@@ -22,7 +24,7 @@ and its re-usable sub-process:
 image::images/waitForSignal.png[]
 
 
-The purpose of this refence architecture is to demonstrate the behavior of the process engine when a signal is sent to the _catching signal event_ (called _signalWaitStateA_ ) of the re-usable sub-process.
+The purpose of this refence architecture is to demonstrate the behavior of the process engine when a signal is sent to the _catching signal event_ (called _signalWaitStateA_ ) of a re-usable sub-process.
 Of note is the different behavior that occurs depending on if the KIE session strategy of the process engine is either _SINGLETON_ or _PER_PROCESS_INSTANCE_.
 
 == Pre-Requisites
@@ -159,9 +161,9 @@ Do you observe the same results ?
 *Answer:*  yes, the behavior of the process engine after having been bounced is the same.
 
 === *PER_PROCESS_INSTANCE* strategy
-The second scenario will involve using a KIE session strategy of:  PER_PROCESS_INSTANCE.
+The second scenario of this reference architecture will involve using a KIE session strategy of:  PER_PROCESS_INSTANCE.
 This strategy dedicates a KIE session to the life of a process instance.
-This strategy allows for simulataneous execution of concurrent requests to different BPMN2 instances.
+This strategy allows for simultaneous execution of concurrent requests to different BPMN2 instances.
 Subsequently, this strategy is the ideal choice for many BPM use cases involving long-running processes.
 
 ==== PER_PROCESS_INSTANCE: Deploy *processTier* KIE project
@@ -169,7 +171,7 @@ Subsequently, this strategy is the ideal choice for many BPM use cases involving
 In the previous example (using SINGLETON kie strategy), the KIE project was manually built and deployed via the BPM Console.
 Subsequently, the project does not need be re-built .... only re-deployed specifying the different KIE session strategy.
 
-The following command undeploy the previous deployment unit, query the execution server to ensure the asnyc undeploy job succeeded and redeploy using a PER_PROCESS INSTANCE strategy:
+The following commands undeploy the previous deployment unit, query the execution server to ensure the async undeploy job succeeded and then finally redeploy using a PER_PROCESS INSTANCE strategy:
 
 -----
 curl -v -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/deployment/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/undeploy
@@ -187,7 +189,7 @@ curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/run
 
 Notice the subtle difference betwen this RESTful invocation and the similar RESTful invocation used previously to start a process instance when the KIE session strategy was SINGLETON.
 Specifically, notice that the RESTful resource specified now includes _withvars_ in the URI path.
-The reason the RESTful resource URI specifies _withvars_ is because the response payload back to the client includes the pInstanceId of the parent process that was instantied and is currently in a wait-state.
+The reason the RESTful resource URI specifies _withvars_ is because the response payload back to the client includes the pInstanceId of the parent process that was instantiated and is currently in a wait-state.
 
 Inspect the payload response for the process instance id:
 
@@ -201,8 +203,8 @@ This pInstanceId of the parent process will be needed later in this exercise.
 In addition, the BPM Suite 6 server.log should now include statements similar to the following:
 
 -----
-INFO  [StartWaitState] executeWorkItem() pInstance = WorkflowProcessInstance144 [processId=processTier.waitForSignal,state=1]
-INFO  [StartWaitState] executeWorkItem() ksessionId = 66 : pInstanceId = 144 : workItemId = 146 : p1 = 0
+INFO  [StartWaitState] executeWorkItem() pInstance = WorkflowProcessInstance181 [processId=processTier.waitForSignal,state=1]
+INFO  [StartWaitState] executeWorkItem() ksessionId = 69 : pInstanceId = 181 : workItemId = 181 : p1 = 0
 -----
 
 Two different process instances have been created as depicted in the _jbpm_ database:
@@ -211,8 +213,8 @@ Two different process instances have been created as depicted in the _jbpm_ data
 jbpm=# select instanceid, processid from processinstanceinfo;
  instanceid |          processid           
 ------------+------------------------------
-        145 | processTier.signalsubprocess
-        146 | processTier.waitForSignal
+        180 | processTier.signalsubprocess
+        181 | processTier.waitForSignal
 (2 rows)
 -----
 
@@ -225,7 +227,7 @@ Because, the SINGLETON KIE session manages all process engines, the signal was c
 
 
 Repeat execution of the same curl command used previously to signal the process engine.
-What is observed when the process engine's KIE strategy is set to PER_PROCESS_INSTANCE ?
+What is observed when the process engine's KIE strategy is now set to PER_PROCESS_INSTANCE ?
 The expected result is that nothing happens.
 The _waitForSignal_ sub-process currently in a wait-state is not signalled.
 
@@ -263,3 +265,4 @@ The two process instanced have completed due to the _waitForSignal_ subprocess h
 
 
 == To-Do
+Extend the Execution Server to allow easy ability to get the pInstanceId of a subprocess given the parent pInstanceId and the name of the sub-process.

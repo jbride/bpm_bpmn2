@@ -37,7 +37,8 @@ image::images/signalSubprocess.png[]
 image::images/waitForSignal.png[]
 
 
-The purpose of this example is to demonstrate the behavior of the process engine in processing of the two process instances when a signal is sent to the _catching signal event_ of the re-usable sub-process.
+The purpose of this example is to demonstrate the behavior of the process engine in processing of the two process instances when a signal is sent to the _catching signal event_ of a re-usable sub-process.
+Of note is the different behavior that occurs depending on if the KIE session strategy of the process engine is either _SINGLETON_ or _PER_PROCESS_INSTANCE_.
 
 Instructions to execute this example can be found link:signal_subprocess_waitstate.adoc[here].
 
