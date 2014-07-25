@@ -7,7 +7,7 @@ image::images/rhheader.png[width=900]
 
 :numbered!:
 [abstract]
-== JBoss GPE Reference Arch: Signal Subprocess Wait-State
+== Signal Subprocess Wait-State
 
 :numbered:
 
