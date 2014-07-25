@@ -8,7 +8,7 @@ image::images/rhheader.png[width=900]
 
 :numbered!:
 [abstract]
-== JBoss GPE Reference Architecture:  BPM Signaling
+== JBoss GPE Reference Arch:  ConcurrentPInstanceSignal
 
 :numbered:
 
