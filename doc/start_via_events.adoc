@@ -8,3 +8,30 @@ image::images/rhheader.png[width=900]
 -----
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/signal?signal=startViaSignalA?event=234
 -----
+
+-----
+Caused by: org.jbpm.workflow.instance.WorkflowRuntimeException: [Minimal:4 - EndProcess:3] -- Unknown node instance type: org.jbpm.workflow.instance.node.ActionNodeInstance@4cd7554d
+    at org.jbpm.workflow.instance.impl.NodeInstanceImpl.trigger(NodeInstanceImpl.java:161) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.impl.NodeInstanceImpl.triggerNodeInstance(NodeInstanceImpl.java:337) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.impl.NodeInstanceImpl.triggerCompleted(NodeInstanceImpl.java:296) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.node.ActionNodeInstance.triggerCompleted(ActionNodeInstance.java:61) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.node.ActionNodeInstance.internalTrigger(ActionNodeInstance.java:57) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.impl.NodeInstanceImpl.trigger(NodeInstanceImpl.java:155) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.impl.NodeInstanceImpl.triggerNodeInstance(NodeInstanceImpl.java:337) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.impl.NodeInstanceImpl.triggerCompleted(NodeInstanceImpl.java:296) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.node.StartNodeInstance.triggerCompleted(StartNodeInstance.java:66) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.node.StartNodeInstance.internalTrigger(StartNodeInstance.java:43) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.impl.NodeInstanceImpl.trigger(NodeInstanceImpl.java:155) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.ruleflow.instance.RuleFlowProcessInstance.internalStart(RuleFlowProcessInstance.java:35) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.process.instance.impl.ProcessInstanceImpl.start(ProcessInstanceImpl.java:226) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl.start(WorkflowProcessInstanceImpl.java:362) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.process.instance.ProcessRuntimeImpl.startProcessInstance(ProcessRuntimeImpl.java:194) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.process.instance.ProcessRuntimeImpl.startProcess(ProcessRuntimeImpl.java:176) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.process.instance.ProcessRuntimeImpl$StartProcessEventListener.signalEvent(ProcessRuntimeImpl.java:393) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.process.instance.event.DefaultSignalManager.internalSignalEvent(DefaultSignalManager.java:81) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.jbpm.process.instance.event.DefaultSignalManager$SignalAction.execute(DefaultSignalManager.java:181) [jbpm-flow-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    at org.drools.core.common.AbstractWorkingMemory.executeQueuedActions(AbstractWorkingMemory.java:1239) [drools-core-6.0.3-redhat-4.jar:6.0.3-redhat-4]
+    ... 91 more
+Caused by: java.lang.IllegalArgumentException: Unknown node instance type: org.jbpm.workflow.instance.node.ActionNodeInstance@4cd7554d
+
+-----
