@@ -103,7 +103,7 @@ Execute the following to create a deployment unit whose process engine utilizes 
 
 ==== SINGLETON: start processes 
 
-In a terminal window in your local environment, execute the following command to instantiate an instance of the _signalsubprocess_ process definition :
+In a terminal window in your local environment, execute the following command to instantiate an instance of the _signalsubprocess_ process definition and its sub-process:
 
 ------
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.signalsubprocess/start
@@ -156,16 +156,55 @@ after having instantiated the process instances, bounce the Execution Server of 
 Afterwards, signal the process engine as was done previously.
 Do you observe the same results ?
 
-Answer:  yes, the behavior of the process engine after having been bounced should be the same.
+*Answer:*  yes, the behavior of the process engine after having been bounced is the same.
 
 === *PER_PROCESS_INSTANCE* strategy
 The second scenario will involve using a KIE session strategy of:  PER_PROCESS_INSTANCE.
 This strategy dedicates a KIE session to the life of a process instance.
-This strategy allows for concurrent requests to different BPMN2 instances to be processed simulataneously.
-Subsequently, this strategy is ideal for many BPM use cases involving long-running processes.
+This strategy allows for simulataneous execution of concurrent requests to different BPMN2 instances.
+Subsequently, this strategy is the ideal choice for many BPM use cases involving long-running processes.
 
 ==== PER_PROCESS_INSTANCE: Deploy *processTier* KIE project
+
+In the previous example (using SINGLETON kie strategy), the KIE project was manually built and deployed via the BPM Console.
+Subsequently, the project does not need be re-built .... only re-deployed specifying the different KIE session strategy.
+
+The following command undeploy the previous deployment unit, query the execution server to ensure the asnyc undeploy job succeeded and redeploy using a PER_PROCESS INSTANCE strategy:
+
+-----
+curl -v -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/deployment/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/undeploy
+curl -vv -u jboss:brms -X GET http://docker_bpms:8080/business-central/rest/deployment/
+curl -v -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/deployment/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/deploy?strategy=PER_PROCESS_INSTANCE
+-----
+
 ==== PER_PROCESS_INSTANCE: start processes 
+
+In a terminal window in your local environment, execute the following command to instantiate an instance of the _signalsubprocess_ process definition and its sub-process:
+
+------
+curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.signalsubprocess/start
+------
+
+The BPM Suite 6 server.log should now include statements similar to the following:
+
+-----
+INFO  [StartWaitState] executeWorkItem() pInstance = WorkflowProcessInstance144 [processId=processTier.waitForSignal,state=1]
+INFO  [StartWaitState] executeWorkItem() ksessionId = 66 : pInstanceId = 144 : workItemId = 146 : p1 = 0
+-----
+
+Two different process instances have been created as depicted in the _jbpm_ database:
+
+-----
+jbpm=# select instanceid, processid from processinstanceinfo;
+ instanceid |          processid           
+------------+------------------------------
+        145 | processTier.signalsubprocess
+        146 | processTier.waitForSignal
+(2 rows)
+-----
+
+These process instances are now in a wait-state.
+
 ==== PER_PROCESS_INSTANCE: signal pInstance
 
 ==== Determine the sub-process instanceId
