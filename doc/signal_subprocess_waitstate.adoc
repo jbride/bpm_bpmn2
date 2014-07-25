@@ -182,10 +182,23 @@ curl -v -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/depl
 In a terminal window in your local environment, execute the following command to instantiate an instance of the _signalsubprocess_ process definition and its sub-process:
 
 ------
-curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.signalsubprocess/start
+curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/withvars/process/processTier.signalsubprocess/start
 ------
 
-The BPM Suite 6 server.log should now include statements similar to the following:
+Notice the subtle difference betwen this RESTful invocation and the similar RESTful invocation used previously to start a process instance when the KIE session strategy was SINGLETON.
+Specifically, notice that the RESTful resource specified now includes _withvars_ in the URI path.
+The reason the RESTful resource URI specifies _withvars_ is because the response payload back to the client includes the pInstanceId of the parent process that was instantied and is currently in a wait-state.
+
+Inspect the payload response for the process instance id:
+
+-----
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><process-instance-with-vars><status>SUCCESS</status><url>http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/withvars/process/processTier.signalsubprocess/start</url><variables/><processInstance><process-id>processTier.signalsubprocess</process-id><id>180</id><state>1</state></processInstance></process-instance-with-vars>
+-----
+
+In the above payload response, the pInstanceId is:  180.
+This pInstanceId of the parent process will be needed later in this exercise.
+
+In addition, the BPM Suite 6 server.log should now include statements similar to the following:
 
 -----
 INFO  [StartWaitState] executeWorkItem() pInstance = WorkflowProcessInstance144 [processId=processTier.waitForSignal,state=1]
@@ -207,17 +220,46 @@ These process instances are now in a wait-state.
 
 ==== PER_PROCESS_INSTANCE: signal pInstance
 
-==== Determine the sub-process instanceId
+In the previous example, the process engine and its SINGLETON KIE session were signalled via a curl command that invokes the BPM execution server.
+Because, the SINGLETON KIE session manages all process engines, the signal was captured by the _catching signal event_ of the _waitForSignal_ sub-process.
 
-Is our recommendation to determine the sub-process instanceId by exposing an API that queries the database ?
+
+Repeat execution of the same curl command used previously to signal the process engine.
+What is observed when the process engine's KIE strategy is set to PER_PROCESS_INSTANCE ?
+The expected result is that nothing happens.
+The _waitForSignal_ sub-process currently in a wait-state is not signalled.
+
+When a PER_PROCESS_INSTANCE KIE session strategy is specified, the command used to signal needs to be explicit about the pInstanceId it intends to signal.
+Consequently, the next step is to determine the pInstanceId of the sub-process using the pInstanceId of the parent process:
+
+. Log into the _jbpm_ database
+. execute the following query
+.. NOTE:  replace the value of _parentprocessinstanceid_ with the actual value of the parent instance id returned in the response payload when the process was started.
+
++
 -----
-jbpm=# select processinstanceid from processinstancelog where processid='processTier.subprocess' and parentprocessinstanceid=11;
+jbpm=# select processinstanceid from processinstancelog where processid='processTier.waitForSignal' and parentprocessinstanceid=180;
  processinstanceid 
 -------------------
-                12
+                181
 -----
 
-=== Signal the sub-process
+Now that the pInstanceId of the subprocess is known, that specific sub-process can be signalled as follows:
+
+-----
+curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/instance/181/signal?signal=signalWaitStateA
+-----
+
+The BPM Suite 6 server.log should now include statements similar to the following:
+
+-----
+INFO  [stdout] waitForSignal.print() ... completing subprocess
+[StartWaitState] abortWorkItem() ksessionId = 69 : pInstanceId = 181 : workItemId = 181
+[stdout] signalSubprocess() completing ...
+-----
+
+Inspect the _jbpm_ database and notice that records for the previous two process instances no longer exist.
+The two process instanced have completed due to the _waitForSignal_ subprocess having been signaled.
 
 
 == To-Do
