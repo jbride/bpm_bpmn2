@@ -1,0 +1,6 @@
+:data-uri:
+:toc2:
+
+image::images/rhheader.png[width=900]
+
+== JBoss GPE Reference Architecture: Start Via Events
