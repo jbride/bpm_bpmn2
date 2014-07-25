@@ -89,8 +89,9 @@ Subsequently, this reference architecture will demonstrate the behavior of the p
 . PER_PROCESS_INSTANCE
 
 === *SINGLETON* Strategy
-The first scenario will involve using the default KIE session strategy:  SINGLETON
-A singleton KIE session produces a single-threaded process engine that remains alive and handles all requests for every process instance.
+The first scenario will involve using the default KIE session strategy:  SINGLETON.
+A singleton KIE session produces a single-threaded process engine that remains alive for the life of the BPM Execution Server and handles all requests for every process instance.
+This strategy is appropriate for BPM use-cases with relatively low load.
 
 ==== SINGLETON: Deploy *processTier* KIE project
 Execute the following to create a deployment unit whose process engine utilizes a SINGLETON KIE session strategy.
@@ -100,9 +101,9 @@ Execute the following to create a deployment unit whose process engine utilizes 
 
 
 
-==== SINGLETON: start *Signal Subprocess Waitstate* 
+==== SINGLETON: start processes 
 
-In a terminal window in your local environment, execute the following command to initiate an instance of the _signalsubprocess_ process definition :
+In a terminal window in your local environment, execute the following command to instantiate an instance of the _signalsubprocess_ process definition :
 
 ------
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.signalsubprocess/start
@@ -126,9 +127,11 @@ jbpm=# select instanceid, processid from processinstanceinfo;
 (2 rows)
 -----
 
-==== SINGLETON: signal pInstances
-This section of the reference architecture involves signalling the process instances that are now in a wait-state.
-The SINGLETON KIE session is knowledgeable of all process instances for a deployment unit
+These process instances are now in a wait-state.
+
+==== SINGLETON: signal process engine
+This section of the reference architecture involves signalling the process engine. 
+The process engine and its SINGLETON KIE session are knowledgeable of all process instances for a deployment unit.
 Therefore, a signal to the this KIE session will be caught by all known process instances with a _capturing intermediary signal event_ of the same name as the signal.
 
 The following command sends a signal of name _signalWaitStateA_ to the KIE session of the deployment unit.
@@ -148,8 +151,22 @@ INFO  [stdout] waitForSignal.print() ... completing subprocess
 Inspect the _jbpm_ database and notice that records for the previous two process instances no longer exist.
 The two process instanced have completed due to the _waitForSignal_ subprocess having been signaled.
 
+If interested, repeat this entire scenario using the SINGLETON kie session with one change: 
+after having instantiated the process instances, bounce the Execution Server of BPM Suite 6 (ie:  kill and restart the java process).
+Afterwards, signal the process engine as was done previously.
+Do you observe the same results ?
+
+Answer:  yes, the behavior of the process engine after having been bounced should be the same.
+
 === *PER_PROCESS_INSTANCE* strategy
-The second scenario will involve using a KIE session strategy of:  PER_PROCESS_INSTANCE
+The second scenario will involve using a KIE session strategy of:  PER_PROCESS_INSTANCE.
+This strategy dedicates a KIE session to the life of a process instance.
+This strategy allows for concurrent requests to different BPMN2 instances to be processed simulataneously.
+Subsequently, this strategy is ideal for many BPM use cases involving long-running processes.
+
+==== PER_PROCESS_INSTANCE: Deploy *processTier* KIE project
+==== PER_PROCESS_INSTANCE: start processes 
+==== PER_PROCESS_INSTANCE: signal pInstance
 
 ==== Determine the sub-process instanceId
 
