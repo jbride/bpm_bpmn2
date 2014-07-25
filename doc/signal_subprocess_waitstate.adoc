@@ -77,18 +77,66 @@ In particular, repository values should be as follows:
 ... *Git URL* :  https://github.com/jboss-gpe-ref-archs/bpm_signalling
 
 
+== *Signal Subprocess Waitstate* :  SINGLETON Session
+
 === Deploy *processTier* KIE project
 The _bpmsignalling_ repository includes a single _KIE project_ called:  _processTier_.
 This KIE project includes a variety of BPMN2 process definitions and custom workItemHandlers that show-case the signaling capabilities of BPM Suite 6.
 Deployment of the _processTier_ project is needed to make its contents available for use by the BPM Suite 6 process engine.
-For the purposes of this _signal_subprocess_waitstate_ example, the default _Singleton_ KIE session strategy is sufficient.
+This reference architecture will demonstrate the behavior of the process engine that occurs when signalled using different KIE session deployment strategies. 
+The first scenario will involve using the default KIE session strategy:  SINGLETON
 
 . In the BPM Console,navigate to:  Authoring -> Tools -> Process Explorer
 . Click the _Build and Deploy_ button.
 
-== *Signal Subprocess Waitstate* :  Execution
+Doing so will create a deployment unit using a SINGLETON KIE session.
+A singleton KIE session produces a single-threaded process engine that remains alive and handles all requests for every process instance.
+
 
 === start *Signal Subprocess Waitstate* instance
+
+In a terminal window in your local environment, execute the following command to initiate an instance of the _signalsubprocess_ process definition :
+
+------
+curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/process/processTier.signalsubprocess/start
+------
+
+The BPM Suite 6 server.log should now include statements similar to the following:
+
+-----
+INFO  [StartWaitState] executeWorkItem() pInstance = WorkflowProcessInstance144 [processId=processTier.waitForSignal,state=1]
+INFO  [StartWaitState] executeWorkItem() ksessionId = 66 : pInstanceId = 144 : workItemId = 146 : p1 = 0
+-----
+
+Two different process instances have been created as depicted in the _jbpm_ database:
+
+-----
+jbpm=# select instanceid, processid from processinstanceinfo;
+ instanceid |          processid           
+------------+------------------------------
+        145 | processTier.signalsubprocess
+        146 | processTier.waitForSignal
+(2 rows)
+-----
+
+=== signal all instances managed by the SINGLETON Kie Session
+
+------
+curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/signal?signal=signalWaitStateA
+------
+
+The BPM Suite 6 server.log should now include statements similar to the following:
+
+-----
+INFO  [stdout] waitForSignal.print() ... completing subprocess
+[StartWaitState] abortWorkItem() ksessionId = 66 : pInstanceId = 146 : workItemId = 147
+[stdout] signalSubprocess() completing ...
+-----
+
+Inspect the _jbpm_ database and notice that records for the previous two process instances no longer exist.
+The two process instanced have completed due to the _waitForSignal_ subprocess having been signaled.
+
+== *Signal Subprocess Waitstate* :  PER_PROCESS_INSTANCE Session
 
 === Determine the sub-process instanceId
 
