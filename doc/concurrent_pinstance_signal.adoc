@@ -263,3 +263,14 @@ The request from the curl client that invoked the _reloadB_ branch was blocked u
 
 
 == To-Do
+
+. Programmatic retrieval of workItemId ?
+
+Is our recommendation to expose a custom API that queries the database ?
+
+-----
+jbpm=# select workitemid from workiteminfo where processinstanceid=19 and name='StartWaitState';
+ workitemid 
+------------
+         12
+-----
