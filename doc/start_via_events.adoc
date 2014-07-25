@@ -3,4 +3,4 @@
 
 image::images/rhheader.png[width=900]
 
-== JBoss GPE Reference Architecture: Start Via Events
+== Start Via Events
