@@ -12,6 +12,8 @@ image::images/rhheader.png[width=900]
 :numbered:
 
 == Overview
+The purpose of this refence architecture is to demonstrate the behavior of the process engine when a signal is sent to the _catching signal event_ (called _signalWaitStateA_ ) of a re-usable sub-process.
+Of note is the different behavior that occurs depending on if the KIE session strategy of the process engine is either _SINGLETON_ or _PER_PROCESS_INSTANCE_.
 
 This example includes the following parent process:
 
@@ -22,10 +24,6 @@ and its re-usable sub-process:
 
 .waitForSignal sub-process
 image::images/waitForSignal.png[]
-
-
-The purpose of this refence architecture is to demonstrate the behavior of the process engine when a signal is sent to the _catching signal event_ (called _signalWaitStateA_ ) of a re-usable sub-process.
-Of note is the different behavior that occurs depending on if the KIE session strategy of the process engine is either _SINGLETON_ or _PER_PROCESS_INSTANCE_.
 
 == Pre-Requisites
 
@@ -265,4 +263,6 @@ The two process instanced have completed due to the _waitForSignal_ subprocess h
 
 
 == To-Do
-Extend the Execution Server to allow easy ability to get the pInstanceId of a subprocess given the parent pInstanceId and the name of the sub-process.
+
+. Extend the Execution Server to allow easy ability to get the pInstanceId of a subprocess given the parent pInstanceId and the name of the sub-process.
+. Change lab instructions to be specific to on-line Openshift environment rather than Docker
