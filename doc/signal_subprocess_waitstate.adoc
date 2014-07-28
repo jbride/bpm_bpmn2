@@ -20,7 +20,7 @@ This example includes the following parent process (Figure 1) and its re-usable 
 .signalSubprocess
 image::images/signalSubprocess.png[]
 
-
+image::images/doc/blank.png[height=250]
 
 .waitForSignal sub-process
 image::images/waitForSignal.png[]
