@@ -56,30 +56,57 @@ The second process instance will be instantiated and signaled using a _SINGLETON
 . either the mysql or postgresql variant of the {dockerbpms} image
 
 == Set-up
-For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the root directory of this reference architecture.
 
-=== Start BPM Suite 6
-As per the {dockerbpms} documentation, pull and start either the mysql or postgresql variants.
+=== local:  Clone this reference architecture
 
-For the purposes of this documentation, the name *docker_bpms* will refer to the ip address of your bpm enabled docker container.
-It is recommended that an entry in /etc/hosts be added that maps *docker_bpms* to the actual ip address of your docker container:
+This reference architecture will be cloned both in your local computer as well as in your remote BPM Suite 6 Openshift environment.
+To clone this reference architecture in your local environment, execute the following:
 
+--------
+git clone https://github.com/jboss-gpe-ref-archs/bpm_signalling.git
+--------
+
+Doing so will create a directory in your local computer called:  bpm_signalling.
+For the purposes of this documentation, this directory will be referred to as $REF_ARCH_HOME.
+
+=== local: Build the Reference Architecture
+The $REF_ARCH_HOME/wih directory contains several custom workItemHandler implementations.
+Of interest is the wih called:  com.redhat.gpe.refarch.bpm_signalling.processtier.StartWaitState.
+These workItemHandler classes need to be built and deployed to the java classpath of BPM Suite 6.
+
+. cd $REF_ARCH_HOME
+. mvn clean install -DskipTests
+
++
+The end result is a jar file containing various custom workItemHandlers:  $REF_ARCH_HOME/wih/target/wih-1.0.jar .
+
+=== local: deploy StartWaitState workItemHandler
+. Secure copy wih-1.0.jar to business central web archive
+
++
 -----
-172.17.0.2      docker_bpms
+scp $REF_ARCH_HOME/wih/target/wih-1.0.jar  <ssh.url.to.your.bpm.environment>:~/bpms/standalone/deployments/business-central.war/WEB-INF/lib
 -----
 
-NOTE:  the ip address of your docker container is most likely different than the example above.
-Check the {dockerbpms} user guide regarding how to determine the ip address.
 
-=== Log into BPM Suite 6
+=== BPM Suite 6:  modify CustomWorkItemHandlers.conf
 
-. As per the {dockerbpms} user guide, ssh into the bpm enabled docker container and tail the server.log.
-. As per the {dockerbpms} user guide, login to the BPM Console.
+. ssh into your remote BPM Suite 6 environment
+. vi $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/classes/META-INF/CustomWorkItemHandlers.conf
+. append the following entry to the list of Service Task names to workItemHandler mappings:
+
++
+-----
+"StartWaitState": new com.redhat.gpe.refarch.bpm_signalling.wih.StartWaitState(ksession)
+-----
+
+. bounce BPM Suite 6
 
 === clone *bpm_signalling* repo
 This reference architecture includes a _KIE project_ called _processTier_ that includes various BPM signaling use cases.
 This section of the documentation provides guidance on cloning of this reference architecture in BPM Suite 6.
 
+. Log into the BPM Console web application of BPM Suite 6
 . Create an organization unit
 .. In the BPM Console, navigate to:  Authoring -> Administration -> Organizational Units -> Manage Organizational Units
 .. Click the _Add_ button and enter in your organizational unit name
