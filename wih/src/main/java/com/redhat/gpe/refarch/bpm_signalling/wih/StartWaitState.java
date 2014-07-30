@@ -1,4 +1,4 @@
-package com.redhat.gpe.refarch.bpm_signalling.processtier;
+package com.redhat.gpe.refarch.bpm_signalling.wih;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;

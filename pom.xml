@@ -10,7 +10,7 @@
   <version>1.0</version>
 
   <modules>
-    <module>processTier</module>
+    <module>wih</module>
   </modules>
 
 </project>

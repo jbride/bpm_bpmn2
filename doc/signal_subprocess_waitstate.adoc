@@ -37,7 +37,49 @@ image::images/waitForSignal.png[]
 . either the mysql or postgresql variant of the {dockerbpms} image
 
 == Set-up
-For the purposes of this documentation, the name _$REF_ARCH_HOME_ refers to the root directory of this reference architecture.
+
+=== local:  Clone this reference architecture
+
+This reference architecture will be cloned both in your local computer as well as in your remote BPM Suite 6 Openshift environment.
+To clone this reference architecture in your local environment, execute the following:
+
+--------
+git clone https://github.com/jboss-gpe-ref-archs/bpm_signalling.git
+--------
+
+Doing so will create a directory in your local computer called:  bpm_signalling.
+For the purposes of this documentation, this directory will be referred to as $REF_ARCH_HOME.
+
+=== local: Build the Reference Architecture
+
+. cd $REF_ARCH_HOME
+. mvn clean install -DskipTests
+
++
+The end result is a jar file containing various custom workItemHandlers:  $REF_ARCH_HOME/wih/target/wih-1.0.jar .
+Of interest to this exercise is the work item handler called:  com.redhat.gpe.refarch.bpm_signalling.processtier.StartWaitState.
+These workItemHandler classes need to be placed on the java classpath of BPM Suite 6.
+
+=== local: deploy StartWaitState workItemHandler
+. Secure copy wih-1.0.jar to business central web archive
+
++
+-----
+scp $REF_ARCH_HOME/wih/target/wih-1.0.jar  <ssh.url.to.your.bpm.environment>:~/bpms/standalone/deployments/business-central.war/WEB-INF/lib
+-----
+
+=== BPM Suite 6:  modify CustomWorkItemHandlers.conf
+
+. ssh into your remote BPM Suite 6 environment
+. vi $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/classes/META-INF/CustomWorkItemHandlers.conf
+. append the following entry to the list of Service Task names to workItemHandler mappings:
+
++
+-----
+"StartWaitState": new com.redhat.gpe.refarch.bpm_signalling.wih.StartWaitState(ksession)
+-----
+
+. bounce BPM Suite 6
 
 === Start BPM Suite 6
 As per the {dockerbpms} documentation, pull and start either the mysql or postgresql variants.
