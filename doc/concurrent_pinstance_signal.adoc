@@ -182,6 +182,7 @@ The parameter _p1=5i sets the value of the _p1_ process instance variable to the
 When the above curl commend is executed, the server.log of BPM Suite 6 will include a statement similar to the following:
 
 ------
+[StartWaitState] executeWorkItem() pInstance = WorkflowProcessInstance11 [processId=processTier.concurrentPInstanceSignal,state=1]
 [StartWaitState] executeWorkItem() ksessionId = 2 : pInstanceId = 11 : workItemId = 1 : p1 = 5
 
 ------
