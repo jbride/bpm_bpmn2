@@ -78,14 +78,14 @@ These workItemHandler classes need to be built and deployed to the java classpat
 . mvn clean install -DskipTests
 
 +
-The end result is a jar file containing various custom workItemHandlers:  $REF_ARCH_HOME/wih/target/wih-1.0.jar .
+The end result is a jar file containing various custom workItemHandlers:  $REF_ARCH_HOME/wih/target/gpe-wih-1.0.jar .
 
 === local: deploy StartWaitState workItemHandler
-. Secure copy wih-1.0.jar to business central web archive
+. Secure copy gpe-wih-1.0.jar to business central web archive
 
 +
 -----
-scp $REF_ARCH_HOME/wih/target/wih-1.0.jar  <ssh.url.to.your.bpm.environment>:~/bpms/standalone/deployments/business-central.war/WEB-INF/lib
+scp $REF_ARCH_HOME/wih/target/gpe-wih-1.0.jar  <ssh.url.to.your.bpm.environment>:~/bpms/standalone/deployments/business-central.war/WEB-INF/lib
 -----
 
 
