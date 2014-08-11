@@ -8,6 +8,8 @@ image::images/rhheader.png[width=900]
 .parentSendEvent
 image::images/parentSendEvent.png[]
 
+image::images/blank.png[]
+
 .startViaEvent
 image::images/startViaEvent.png[]
 
