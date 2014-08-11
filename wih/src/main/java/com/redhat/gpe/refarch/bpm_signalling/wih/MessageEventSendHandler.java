@@ -40,7 +40,7 @@ public class MessageEventSendHandler extends AbstractLogOrThrowWorkItemHandler {
     public MessageEventSendHandler() {}
 
     public MessageEventSendHandler(KieSession sessionObj) {
-	this.sessionObj = sessionObj;
+    this.sessionObj = sessionObj;
         this.setLogThrownException(true);
     }
 

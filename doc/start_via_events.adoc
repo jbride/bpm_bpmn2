@@ -5,6 +5,13 @@ image::images/rhheader.png[width=900]
 
 == Start Via Events
 
+.parentSendEvent
+image::images/parentSendEvent.png[]
+
+.startViaEvent
+image::images/startViaEvent.png[]
+
+
 -----
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/signal?signal=startViaSignalA?event=234
 -----
