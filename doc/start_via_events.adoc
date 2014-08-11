@@ -10,7 +10,7 @@ image::images/rhheader.png[width=900]
 .parentSendEvent
 image::images/parentSendEvent.png[]
 
-image::images/blank.png[height="200"]
+image::images/blank.png[height=100]
 
 .startViaEvent
 image::images/startViaEvent.png[]
