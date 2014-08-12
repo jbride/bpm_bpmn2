@@ -34,6 +34,11 @@ If there is only one EventDefinition associated with the Start Event and that Ev
 === Pre-Requisites
 === Set-up
 === Test
+
+==== community jbpm6.1.0.Final
+https://community.jboss.org/message/884049#884049
+
+==== BPM Suite 6.0.2
 -----
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/signal?signal=startViaSignalA?event=234
 -----
