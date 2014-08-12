@@ -15,6 +15,21 @@ image::images/blank.png[height=100]
 .startViaEvent
 image::images/startViaEvent.png[]
 
+==== BPMN2 specification
+Section *10.4.2 Start Event* / Table *10.84*
+
+. *Message* Start Event
+A Message arrives from a Participant and triggers the start of the Process
+See page 93 for more details on Messages.
+If there is only one EventDefinition associated with the Start Event and that EventDefinition is of the subclass MessageEventDefinition, then the Event is a Message Start Event and MUST be displayed with an envelope marker (see the figure to the right).
+The actual Participant from which the Message is received can be identified by connecting the Event to a Participant using a Message Flow within the definitional Collaboration of the Process – see Table 10.1.
+
+
+. *Signal* Start Event
+A Signal arrives that has been broadcast from another Process and triggers the start of the Process.
+Note that the Signal is not a Message, which has a specific target for the Message.
+Multiple Processes can have Start Events that are triggered from the same broadcasted Signal.
+If there is only one EventDefinition associated with the Start Event and that EventDefinition is of the subclass SignalEventDefinition,then the Event is a Signal Start Event and MUST be displayed with a triangle marker (see the figure to the right).
 
 === Pre-Requisites
 === Set-up
