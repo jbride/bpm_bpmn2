@@ -1,5 +1,6 @@
 :data-uri:
 :toc2:
+:startprocesseventlistener: link:https://github.com/droolsjbpm/jbpm/blob/master/jbpm-flow/src/main/java/org/jbpm/process/instance/ProcessRuntimeImpl.java#L347[StartProcessEventListener class]
 
 image::images/rhheader.png[width=900]
 
@@ -36,6 +37,8 @@ If there is only one EventDefinition associated with the Start Event and that Ev
 === Test
 
 ==== community jbpm6.1.0.Final
+Need to use 'event' keyword when signalling as per {startprocesseventlistener}.
+
 https://community.jboss.org/message/884049#884049
 
 ==== BPM Suite 6.0.2
