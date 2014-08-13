@@ -88,7 +88,7 @@ Any name will do.  We in Red Hat's Global Partner Enablement team typically use 
 . clone this git repository as follows:
 .. In the BPM Console, naviate to:  Authoring -> Administration -> Repositories -> Clone Repositories
 .. Enter in values as per below:
-
++
 image::images/clone.png[]
 +
 In particular, repository values should be as follows:
@@ -96,6 +96,8 @@ In particular, repository values should be as follows:
 ... *Repository Name* :   bpmsignalling
 ... *Organizational Unit* :   replace with your organization name
 ... *Git URL* :  https://github.com/jboss-gpe-ref-archs/bpm_signalling
+
+=== Deploy *processTier* project with _SINGLETON_ KIE session strategy
 
 . Still in the BPM Console, navigate to:  Authoring -> Project Authoring -> Tools -> Project Editor
 . Click the _Build & Deploy_ button
