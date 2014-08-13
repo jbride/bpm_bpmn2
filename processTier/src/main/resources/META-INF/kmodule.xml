@@ -1,6 +1,3 @@
 <kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <kbase name="bpmsignalling_base" default="true" eventProcessingMode="cloud" equalsBehavior="identity" declarativeAgenda="disabled" scope="javax.enterprise.context.ApplicationScoped" packages="*">
-    <ksession name="bpmsignalling_session" type="stateful" default="true" clockType="realtime" scope="javax.enterprise.context.ApplicationScoped">
-    </ksession>
-  </kbase>
+  <kbase name="bpmsignalling_base" default="true" eventProcessingMode="cloud" equalsBehavior="identity" declarativeAgenda="disabled" scope="javax.enterprise.context.ApplicationScoped" packages="*"/>
 </kmodule>
