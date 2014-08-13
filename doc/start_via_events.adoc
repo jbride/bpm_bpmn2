@@ -18,6 +18,8 @@ image::images/blank.png[height=100]
 .receiveStartEvents
 image::images/startViaEvent.png[]
 
+image::images/blank.png[height=50]
+
 The purpose of this example is to deep-dive into various types of BPMN2 _process start events_ and their implementation in BPM Suite 6.
 This example includes the two process diagrams depicted above.
 
