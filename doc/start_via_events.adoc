@@ -128,11 +128,6 @@ The log is indicating the following :
 
 For further verification, inspect the tables of the jbpm _processInstanceLog_ table.
 
-==== community jbpm6.1.0.Final
-Need to use 'event' keyword when signalling as per {startprocesseventlistener}.
-
-https://community.jboss.org/message/884049#884049
-
 ==== Error in BPM Suite 6.0.2
 -----
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/signal?signal=startViaSignalA?event=234
