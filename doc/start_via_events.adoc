@@ -122,6 +122,7 @@ image::images/startSendEvent.png[]
 -----
 
 The log is indicating the following :
+
 . Instances of both process definitions were executed
 . The value of the _p1_ process variable was correctly passed to the process started via the _signal start event node_.
 
