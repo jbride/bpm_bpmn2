@@ -193,7 +193,7 @@ Subsequently, this strategy is the ideal choice for many BPM use cases involving
 ==== PER_PROCESS_INSTANCE: Deploy *processTier* KIE project
 
 In the previous example (using SINGLETON kie strategy), the KIE project was manually built and deployed via the BPM Console.
-Subsequently, the project does not need be re-built .... only re-deployed specifying the different KIE session strategy.
+Subsequently, the project does not need to be re-built .... only re-deployed specifying the different KIE session strategy.
 
 The following commands undeploy the previous deployment unit, query the execution server to ensure the async undeploy job succeeded and then finally redeploy using a PER_PROCESS INSTANCE strategy:
 

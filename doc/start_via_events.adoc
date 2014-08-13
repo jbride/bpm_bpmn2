@@ -76,7 +76,6 @@ NOTE:  Although this example does not work in BPM Suite 6.0.2, the remainder of 
 For the purposes of this exercise, use community jbpm6.1.0.Final rather than BPM Suite 6.0.2.
 
 ==== clone *bpm_signalling* repo
-This reference architecture includes a _KIE project_ called _processTier_ that includes various BPM signaling use cases.
 This section of the documentation provides guidance on cloning of this reference architecture in the BPM Console of BPM Suite 6.
 
 . Log into the BPM Console web application of BPM Suite 6
@@ -98,11 +97,17 @@ In particular, repository values should be as follows:
 ... *Git URL* :  https://github.com/jboss-gpe-ref-archs/bpm_signalling
 
 === Deploy *processTier* project with _SINGLETON_ KIE session strategy
+This reference architecture includes a _KIE project_ called _processTier_ that includes various BPM signaling use cases.
 
 . Still in the BPM Console, navigate to:  Authoring -> Project Authoring -> Tools -> Project Editor
 . Click the _Build & Deploy_ button
 
-=== Signal Start Event test
+Doing so builds and deploys the _processTier_ KIE project and makes all of its BPMN2 process definitions avaialable for execution.
+The default KIE session strategy used is of type:  _SINGLETON_.
+
+=== Signal Start Event test : SINGLETON strategy
+Now that the _processTier_ project has been deployed with a session strategy of _SINGLETON_, the _sendEvent_ and _receiveStartEvents_ are available for execution.
+In this exercise, an instance of the  _startViaEvents.sendEvent_ process will be started and subsequently signal the start of the _startViaEvents.receiveStartEvents_ process.
 
 . In the BPM Console, navigate to: Process Management -> Process Definitions
 . In the list of BPMN2 process definitions that appear, click the start button on the _startViaEvents.sendEvent_ process definition
@@ -129,6 +134,19 @@ The log is indicating the following :
 . The value of the _p1_ process variable was correctly passed to the process started via the _signal start event node_.
 
 For further verification, inspect the tables of the jbpm _processInstanceLog_ table.
+
+=== Signal Start Event test : PER_PROCESS_INSTANCE strategy
+Using a SINGLETON kie session strategy, signalling of a _signal start event_ executes as expected.
+This section of the exercise runs the same test with a change to the KIE session strategy to:  PER_PROCESS_INSTANCE.
+To do so, the project does not need to be re-built .... only re-deployed specifying the different KIE session strategy.
+
+The following commands undeploy the previous deployment unit, query the execution server to ensure the async undeploy job succeeded and then finally redeploy using a PER_PROCESS INSTANCE strategy:
+
+-----
+curl -v -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/deployment/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/undeploy
+curl -vv -u jboss:brms -X GET http://docker_bpms:8080/business-central/rest/deployment/
+curl -v -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/deployment/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/deploy?strategy=PER_PROCESS_INSTANCE
+-----
 
 ==== Error in BPM Suite 6.0.2
 -----
