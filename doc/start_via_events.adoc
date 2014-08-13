@@ -1,6 +1,8 @@
 :data-uri:
 :toc2:
 :startprocesseventlistener: link:https://github.com/droolsjbpm/jbpm/blob/master/jbpm-flow/src/main/java/org/jbpm/process/instance/ProcessRuntimeImpl.java#L347[StartProcessEventListener class]
+:jbpmrelease: link:https://repository.jboss.org/nexus/content/groups/public-jboss/org/jbpm/jbpm-distribution/6.1.0.Final/jbpm-distribution-6.1.0.Final-installer.zip[community jbpm 6.1.0.Final release]
+:jbpminstaller: link:http://docs.jboss.org/jbpm/v6.1.0.CR1/userguide/jBPMInstaller.html[jbpm v6.1.0.Final installer]
 
 image::images/rhheader.png[width=900]
 
@@ -8,16 +10,19 @@ image::images/rhheader.png[width=900]
 
 === Overview
 
-.parentSendEvent
+.sendEvent
 image::images/parentSendEvent.png[]
 
 image::images/blank.png[height=100]
 
-.startViaEvent
+.receiveStartEvents
 image::images/startViaEvent.png[]
 
+The purpose of this example is to deep-dive into various types of BPMN2 _process start events_ and their implementation in BPM Suite 6.
+This example includes the two process diagrams depicted above.
+
 ==== BPMN2 specification
-Section *10.4.2 Start Event* / Table *10.84*
+The following is relevant material found in the BPMN2 specification (specifically, Section *10.4.2 Start Event* / Table *10.84*)  regarding _Start Events_:
 
 . *Message* Start Event
 A Message arrives from a Participant and triggers the start of the Process
@@ -33,7 +38,25 @@ Multiple Processes can have Start Events that are triggered from the same broadc
 If there is only one EventDefinition associated with the Start Event and that EventDefinition is of the subclass SignalEventDefinition,then the Event is a Signal Start Event and MUST be displayed with a triangle marker (see the figure to the right).
 
 === Pre-Requisites
+
+. ssh client
+. maven 3.0.5 (or greater)
+. git client
+. curl
+. familiarity with {bpmproduct}
+. proficiency with basic *nix command line
+. local installation of {jbpmrelease}
++
+NOTE:  start events do not work in supported BPM Suite 6.
+The fix is found only in the upstream community jbpm v6.0.1.Final.
+Under certain circumstances, there are bugs with start event nodes even in community jbpm v6.0.1.Final.
+Those issues are discussed later in this reference architecture documentation.
+
 === Set-up
+
+==== Local install of community jbpm v6.0.1.Final
+Follow the instructions for the {jbpminstaller}
+
 === Test
 
 ==== community jbpm6.1.0.Final
