@@ -22,8 +22,19 @@ image::images/startViaEvent.png[]
 
 image::images/blank.png[height=50]
 
+==== Purpose
 The purpose of this example is to deep-dive into various types of BPMN2 _process start events_ and their implementation in BPM Suite 6.
 This example includes the two process diagrams depicted above.
+
+==== Process details
+Both of the above BPMN2 process definitions define a process variabled called _p1_ of type String.
+The various script tasks simply log the value of the _p1_ process variable at that point in the process.
+
+As a requirement of the {startprocesseventlistener}, the _DataInput_ property of the _SendSignalA_ throwing signal event node defines a _DataInput_ property of "_event_".
+The _p1_ process variable is mapped to this _event_ DataInput property.
+
+Similarly, the _DataOutput_ property of the _ReceiveSignalA_ Signal Start Event has a name of "_event_".
+This _event_ DataOutput property is then mapped to the _p1_ process variable.
 
 ==== BPMN2 specification
 The following is relevant material found in the BPMN2 specification (specifically, Section *10.4.2 Start Event* / Table *10.84*)  regarding _Start Events_:
@@ -86,13 +97,42 @@ In particular, repository values should be as follows:
 ... *Organizational Unit* :   replace with your organization name
 ... *Git URL* :  https://github.com/jboss-gpe-ref-archs/bpm_signalling
 
-=== Test
+. Still in the BPM Console, navigate to:  Authoring -> Project Authoring -> Tools -> Project Editor
+. Click the _Build & Deploy_ button
+
+=== Signal Start Event test
+
+. In the BPM Console, navigate to: Process Management -> Process Definitions
+. In the list of BPMN2 process definitions that appear, click the start button on the _startViaEvents.sendEvent_ process definition
++
+image::images/selectSendEvent.png[]
+
+. In the pop-up that appears, enter any value for the property _p1_.
+. In the _eventType_ text box, enter a value of:  _signal_
+. Press the _start_ button
++
+image::images/startSendEvent.png[]
+
+. View your BPM Suite 6 server.log and notice log statements similar to the following:
+
+-----
+2014-08-13 13:02:21,478 INFO  [stdout] parentSendEvent() starting
+2014-08-13 13:02:21,504 INFO  [stdout] startViaEvent() p1 = RHT_2014
+2014-08-13 13:02:21,519 INFO  [stdout] parentSendEvent() finishing.  p1 = RHT_2014
+-----
+
+The log is indicating the following :
+. Instances of both process definitions were executed
+. The value of the _p1_ process variable was correctly passed to the process started via the _signal start event node_.
+
+For further verification, inspect the tables of the jbpm _processInstanceLog_ table.
+
 ==== community jbpm6.1.0.Final
 Need to use 'event' keyword when signalling as per {startprocesseventlistener}.
 
 https://community.jboss.org/message/884049#884049
 
-==== BPM Suite 6.0.2
+==== Error in BPM Suite 6.0.2
 -----
 curl -vv -u jboss:brms -X POST http://docker_bpms:8080/business-central/rest/runtime/com.redhat.gpe.refarch.bpm_signalling:processTier:1.0/signal?signal=startViaSignalA?event=234
 -----
