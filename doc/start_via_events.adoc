@@ -8,6 +8,8 @@ image::images/rhheader.png[width=900]
 
 == Start Via Events
 
+:numbered:
+
 === Overview
 
 .sendEvent
@@ -51,10 +53,8 @@ If there is only one EventDefinition associated with the Start Event and that Ev
 . proficiency with basic *nix command line
 . local installation of {jbpmrelease}
 +
-NOTE:  start events do not work in supported BPM Suite 6.
+NOTE:  start events do not work in supported BPM Suite 6.0.2.
 The fix is found only in the upstream community jbpm v6.1.0.Final.
-Under certain circumstances, there are bugs with start event nodes even in community jbpm v6.1.0.Final.
-Those issues are discussed later in this reference architecture documentation.
 
 === Set-up
 
