@@ -293,12 +293,21 @@ The request from the curl client that invoked the _reloadB_ branch was blocked u
 == To-Do
 
 . Programmatic retrieval of workItemId ?
-
++
 Is our recommendation to expose a custom API that queries the database ?
-
++
 -----
 jbpm=# select workitemid from workiteminfo where processinstanceid=19 and name='StartWaitState';
  workitemid 
 ------------
          12
 -----
+
+. Pessimistic Locking Support
++
+BPM Suite 6.1 introduces Pessimistic Locking Support.
+Could use this as an alternative to OptimisticLock when volume of concurrent signals on the same pInstance is expected to be high.
++
+https://documentation-devel.engineering.redhat.com/site/documentation/en-US/Red_Hat_JBoss_BPM_Suite/6.1/html-single/Administration_And_Configuration_Guide/index.html#Process_Instance
+
+
